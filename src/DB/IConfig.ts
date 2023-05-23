@@ -1,3 +1,5 @@
+import { FastifyJWTOptions } from "@fastify/jwt";
+
 interface IConfig {
     accessRights: Record<string, number>;
     db: {
@@ -6,9 +8,11 @@ interface IConfig {
         address: string;
         login: string;
         password: string;
+        salt: string;
     };
     server: {
         port: number;
+        jwtSecret: FastifyJWTOptions["secret"];
         key: string;
         cert: string;
     };

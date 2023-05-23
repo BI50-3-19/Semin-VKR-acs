@@ -30,4 +30,20 @@ sectionManager.add(new Section({
     ]
 }));
 
+sectionManager.add(new Section({
+    name: "session",
+    auth: "none",
+    methods: [
+        "create"
+    ]
+}));
+
+sectionManager.add(new Section({
+    name: "users",
+    auth: "jwt",
+    methods: [
+        "get"
+    ]
+}));
+
 export default sectionManager;

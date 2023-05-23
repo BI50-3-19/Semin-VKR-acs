@@ -7,6 +7,7 @@ import formBody from "@fastify/formbody";
 import multiPart from "@fastify/multipart";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
+import jwt from "@fastify/jwt";
 
 import DB from "../DB";
 import APIError from "./Error";
@@ -28,6 +29,9 @@ void server.register(formBody);
 void server.register(multiPart);
 void server.register(cors, { origin: "*" });
 void server.register(helmet);
+void server.register(jwt, {
+    secret: DB.config.server.jwtSecret
+});
 
 server.setReplySerializer((payload) => {
     if (Object.prototype.hasOwnProperty.call(payload, "error")) {
@@ -45,7 +49,7 @@ server.setNotFoundHandler((request) => {
 
 server.setErrorHandler((err, request, reply) => {
     if (err.validation) {
-        void reply.status(200).send({
+        return reply.status(200).send({
             error: new APIError({
                 code: 2,
                 request,
@@ -54,20 +58,18 @@ server.setErrorHandler((err, request, reply) => {
     }
 
     if (err instanceof APIError) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        void reply.status(200).send({ error: err.toJSON() });
+        return reply.status(200).send({ error: err.toJSON() as unknown });
     } else {
         if (reply.statusCode === 429) {
             const error = new APIError({
                 code: 3, request
             });
-            void reply.status(200).send({ error: error.toJSON() });
+            return reply.status(200).send({ error: error.toJSON() });
         } else {
-            console.log(err);
             const error = new APIError({
                 code: 0, request
             });
-            void reply.status(200).send({ error: error.toJSON() });
+            return reply.status(200).send({ error: error.toJSON() });
         }
     }
 });
@@ -95,6 +97,16 @@ server.addHook<{
         throw new APIError({
             code: 1, request
         });
+    }
+
+    if (sectionClass.auth === "jwt") {
+        try {
+            await request.jwtVerify();
+        } catch (err) {
+            throw new APIError({
+                code: 4, request
+            });
+        }
     }
 });
 

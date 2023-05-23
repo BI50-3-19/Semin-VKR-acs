@@ -4,7 +4,10 @@ const ERRORS = {
     0: "Internal Server Error",
     1: "Method not found",
     2: "One of the required parameters is not transmitted or invalid",
-    3: "Rate limit exceeded, retry in 1 minute"
+    3: "Rate limit exceeded, retry in 1 minute",
+    4: "Invalid auth data",
+    5: "Need OTP code",
+    6: "User not found"
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;

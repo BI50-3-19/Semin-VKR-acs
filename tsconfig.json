@@ -11,6 +11,7 @@
         "allowSyntheticDefaultImports": true,
         "declaration": true
     },
+    "files": ["./src/@types/fastify-jwt.d.ts"],
     "include": ["./src"],
     "exclude": ["node_modules"]
 }
