@@ -9,7 +9,7 @@ server.post("/users.get", async (request) => {
 
     if (user === null) {
         throw new APIError({
-            code: 6, request
+            code: 7, request
         });
     }
 

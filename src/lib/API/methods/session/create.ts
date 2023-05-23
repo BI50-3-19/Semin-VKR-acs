@@ -4,6 +4,7 @@ import APIError from "../../Error";
 
 import CryptoJS, { PBKDF2 } from "crypto-js";
 import { Type } from "@sinclair/typebox";
+import { authenticator } from "otplib";
 
 server.post("/session.create" ,{
     schema: {
@@ -25,6 +26,22 @@ server.post("/session.create" ,{
         throw new APIError({
             code: 4, request
         });
+    }
+
+    if (user.auth?.otp) {
+        if (!("otp" in request.body)) {
+            throw new APIError({
+                code: 5, request
+            });
+        }
+
+        const code = authenticator.generate(user.auth.otp);
+
+        if (code !== request.body.otp) {
+            throw new APIError({
+                code: 6, request
+            });
+        }
     }
 
     return {

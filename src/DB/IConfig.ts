@@ -13,6 +13,7 @@ interface IConfig {
     server: {
         port: number;
         jwtSecret: FastifyJWTOptions["secret"];
+        otpSecret: string;
         key: string;
         cert: string;
     };

@@ -7,7 +7,8 @@ const ERRORS = {
     3: "Rate limit exceeded, retry in 1 minute",
     4: "Invalid auth data",
     5: "Need OTP code",
-    6: "User not found"
+    6: "Invalid OTP code",
+    7: "User not found",
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;
