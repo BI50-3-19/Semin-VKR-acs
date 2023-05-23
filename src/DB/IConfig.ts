@@ -8,6 +8,7 @@ interface IConfig {
         password: string;
     };
     server: {
+        port: number;
         key: string;
         cert: string;
     };

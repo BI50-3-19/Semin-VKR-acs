@@ -13,7 +13,14 @@
         "typescript": "^5.0.4"
     },
     "dependencies": {
+        "@fastify/cors": "^8.2.1",
+        "@fastify/formbody": "^7.4.0",
+        "@fastify/helmet": "^10.1.1",
+        "@fastify/multipart": "^7.6.0",
+        "@fastify/rate-limit": "^8.0.0",
+        "@fastify/type-provider-typebox": "^3.2.0",
         "@sinclair/typebox": "^0.28.11",
+        "fastify": "^4.17.0",
         "mongoose": "^7.2.0"
     }
 }

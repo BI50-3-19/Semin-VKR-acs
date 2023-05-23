@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-import IConfig from "../../DB/IConfig";
 import config from "../../DB/config";
 
 import userSchema, { TUserBox } from "./schemes/user";
@@ -11,7 +10,7 @@ import roleSchema, { TRoleBox } from "./schemes/role";
 import scheduleSchema, { TScheduleBox } from "./schemes/schedule";
 
 class DB {
-    public readonly config: IConfig;
+    public readonly config = config;
     private readonly _connection: mongoose.Connection;
 
     public readonly users: mongoose.Model<TUserBox>;
@@ -22,8 +21,6 @@ class DB {
     public readonly schedules: mongoose.Model<TScheduleBox>;
 
     constructor() {
-        this.config = Object.freeze(config);
-
         this._connection = mongoose.createConnection(
             `${config.db.protocol}://${config.db.login}:${config.db.password}@${config.db.address}/`,
             {
