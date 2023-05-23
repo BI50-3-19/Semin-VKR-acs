@@ -7,6 +7,7 @@ import userSchema, { TUserBox } from "./schemes/user";
 import areaSchema, { TAreaBox } from "./schemes/area";
 import deviceSchema, { TDeviceBox } from "./schemes/device";
 import groupSchema, { TGroupBox } from "./schemes/group";
+import roleSchema, { TRoleBox } from "./schemes/role";
 
 class DB {
     public readonly config: IConfig;
@@ -16,6 +17,7 @@ class DB {
     public readonly areas: mongoose.Model<TAreaBox>;
     public readonly devices: mongoose.Model<TDeviceBox>;
     public readonly groups: mongoose.Model<TGroupBox>;
+    public readonly roles: mongoose.Model<TRoleBox>;
 
     constructor() {
         this.config = Object.freeze(config);
@@ -37,6 +39,7 @@ class DB {
         this.areas = createModel("areas", areaSchema);
         this.devices = createModel("devices", deviceSchema);
         this.groups = createModel("groups", groupSchema);
+        this.roles = createModel("roles", roleSchema);
     }
 
     public connect(): Promise<unknown> {
