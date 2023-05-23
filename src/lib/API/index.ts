@@ -14,6 +14,7 @@ import APIError from "./Error";
 import sectionManager from "./SectionManager";
 
 import { TUserBox } from "../DB/schemes/user";
+import utils from "../utils";
 
 const server = Fastify({
     https: (DB.config.server.cert !== "" && DB.config.server.key !== "") ? {
@@ -104,13 +105,18 @@ server.addHook<{
     if (sectionClass.auth === "jwt") {
         try {
             await request.jwtVerify();
-            request.userData = await DB.cache.getUser(request.user.id) as TUserBox;
-            request.userRole = await DB.cache.getRole(request.userData.roleId);
         } catch (err) {
             throw new APIError({
                 code: 4, request
             });
         }
+
+        request.userData = await DB.cache.getUser(request.user.id) as TUserBox;
+        request.userRole = await DB.cache.getRole(request.userData.roleId);
+
+        request.userHasAccess = (right: keyof typeof DB["config"]["accessRights"]): boolean => {
+            return utils.hasAccess(right, request.userRole.mask);
+        };
     }
 });
 

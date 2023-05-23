@@ -1,6 +1,5 @@
 import server from "../..";
 import DB from "../../../DB";
-import utils from "../../../utils";
 import APIError from "../../Error";
 import { TUserBox } from "../../../DB/schemes/user";
 
@@ -17,7 +16,7 @@ server.post("/users.get", {
     let role = request.userRole;
 
     if ("userId" in request.body) {
-        if (!utils.hasAccess("users.get", role.mask)) {
+        if (!request.userHasAccess("users.get")) {
             throw new APIError({
                 code: 8, request
             });
