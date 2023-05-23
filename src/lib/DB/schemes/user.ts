@@ -2,8 +2,36 @@ import { Schema } from "mongoose";
 
 import { Static, Type } from "@sinclair/typebox";
 
+const userAuthBox = Type.Object({
+    login: Type.String(),
+    password: Type.String(),
+    otp: Type.Optional(Type.String())
+});
+
+type TUserAuthBox = Static<typeof userAuthBox>
+
+const userAuthSchema = new Schema<TUserAuthBox>({
+    login: {
+        type: Schema.Types.String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: Schema.Types.String,
+        required: true
+    },
+    otp: {
+        type: Schema.Types.String,
+        required: false
+    }
+}, {
+    versionKey: false,
+    _id: false
+});
+
 const userBox = Type.Object({
     id: Type.Number(),
+    auth: Type.Optional(userAuthBox),
     name: Type.String(),
     surname: Type.String(),
     patronymic: Type.Optional(Type.String())
@@ -16,6 +44,10 @@ const userSchema = new Schema<TUserBox>({
         type: Schema.Types.Number,
         required: true,
         unique: true,
+    },
+    auth: {
+        type: userAuthSchema,
+        required: false
     },
     name: {
         type: Schema.Types.String,
