@@ -9,6 +9,8 @@ import groupSchema, { TGroupBox } from "./schemes/group";
 import roleSchema, { TRoleBox } from "./schemes/role";
 import scheduleSchema, { TScheduleBox } from "./schemes/schedule";
 
+import Cache from "./Cache";
+
 class DB {
     public readonly config = config;
     private readonly _connection: mongoose.Connection;
@@ -19,6 +21,8 @@ class DB {
     public readonly groups: mongoose.Model<TGroupBox>;
     public readonly roles: mongoose.Model<TRoleBox>;
     public readonly schedules: mongoose.Model<TScheduleBox>;
+
+    public readonly cache: Cache;
 
     constructor() {
         this._connection = mongoose.createConnection(
@@ -40,10 +44,12 @@ class DB {
         this.groups = createModel("groups", groupSchema);
         this.roles = createModel("roles", roleSchema);
         this.schedules = createModel("schedules", scheduleSchema);
+        this.cache = new Cache(this);
     }
 
-    public connect(): Promise<unknown> {
-        return this._connection.asPromise();
+    public async connect(): Promise<void> {
+        await this._connection.asPromise();
+        await this.cache.load();
     }
 }
 
