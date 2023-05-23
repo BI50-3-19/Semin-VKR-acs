@@ -1,6 +1,7 @@
 import NodeCache from "node-cache";
 import { DB } from ".";
 import { TRoleBox } from "./schemes/role";
+import { TUserBox } from "./schemes/user";
 
 class Cache {
     private _db: DB;
@@ -12,6 +13,24 @@ class Cache {
             stdTTL: 300,
             checkperiod: 300
         });
+    }
+
+    public async getUser(id: number): Promise<TUserBox | null> {
+        let user = this._cache.get<TRoleBox | null>(`user-${id}`);
+
+        if (user === undefined) {
+            user = await this._db.users.findOne({
+                id
+            }).lean();
+
+            if (user === null) {
+                return null;
+            }
+
+            this._cache.set(`user-${id}`, user);
+        }
+
+        return user as unknown as TUserBox;
     }
 
     public async getRole(id: number): Promise<TRoleBox> {

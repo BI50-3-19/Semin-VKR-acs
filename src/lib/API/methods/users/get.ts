@@ -2,6 +2,7 @@ import server from "../..";
 import DB from "../../../DB";
 import utils from "../../../utils";
 import APIError from "../../Error";
+import { TUserBox } from "../../../DB/schemes/user";
 
 import { Type } from "@sinclair/typebox";
 
@@ -12,17 +13,8 @@ server.post("/users.get", {
         })
     }
 }, async (request) => {
-    let user = await DB.users.findOne({
-        id: request.user.id
-    }).lean();
-
-    if (user === null) {
-        throw new APIError({
-            code: 7, request
-        });
-    }
-
-    let role = await DB.cache.getRole(user.roleId);
+    let user: TUserBox | null = request.userData;
+    let role = request.userRole;
 
     if ("userId" in request.body) {
         if (!utils.hasAccess("users.get", role.mask)) {

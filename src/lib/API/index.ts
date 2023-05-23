@@ -13,6 +13,8 @@ import DB from "../DB";
 import APIError from "./Error";
 import sectionManager from "./SectionManager";
 
+import { TUserBox } from "../DB/schemes/user";
+
 const server = Fastify({
     https: (DB.config.server.cert !== "" && DB.config.server.key !== "") ? {
         key: fs.readFileSync(DB.config.server.key),
@@ -102,6 +104,8 @@ server.addHook<{
     if (sectionClass.auth === "jwt") {
         try {
             await request.jwtVerify();
+            request.userData = await DB.cache.getUser(request.user.id) as TUserBox;
+            request.userRole = await DB.cache.getRole(request.userData.roleId);
         } catch (err) {
             throw new APIError({
                 code: 4, request
