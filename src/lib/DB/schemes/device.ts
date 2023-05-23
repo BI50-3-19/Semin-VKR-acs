@@ -2,13 +2,14 @@ import { Schema } from "mongoose";
 
 import { Static, Type } from "@sinclair/typebox";
 
-const DEVICE_TYPES = ["middle", "end"] as const;
-
 const deviceBox = Type.Object({
     id: Type.Number(),
+    title: Type.String(),
+    description: Type.Optional(Type.String()),
     token: Type.String(),
-    areaId: Type.Number(),
-    type: Type.Union(DEVICE_TYPES.map((type) => Type.Literal(type))),
+    prevAreaId: Type.Union([Type.Number(), Type.Null()]),
+    nextAreaId: Type.Union([Type.Number(), Type.Null()]),
+    lastRequestDate: Type.Optional(Type.Date())
 });
 
 type TDeviceBox = Static<typeof deviceBox>
@@ -18,20 +19,31 @@ const deviceSchema = new Schema<TDeviceBox>({
         type: Schema.Types.Number,
         required: true,
         unique: true,
-    } ,
+    },
+    title: {
+        type: Schema.Types.String,
+        required: true,
+    },
+    description: {
+        type: Schema.Types.String,
+        required: false
+    },
     token: {
         type: Schema.Types.String,
         required: true,
         unique: true
     },
-    type: {
-        type: Schema.Types.String,
+    prevAreaId: {
+        type: Schema.Types.Number,
         required: true,
-        validate: [(val: TDeviceBox["type"]): boolean => DEVICE_TYPES.includes(val), "Invalid device type"],
     },
-    areaId: {
+    nextAreaId: {
         type: Schema.Types.Number,
         required: true
+    },
+    lastRequestDate: {
+        type: Schema.Types.Date,
+        required: false
     }
 }, {
     versionKey: false
