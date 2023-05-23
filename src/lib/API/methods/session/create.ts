@@ -15,7 +15,9 @@ server.post("/session.create" ,{
         })
     }
 }, async (request) => {
-    const password = PBKDF2(request.body.password, DB.config.db.salt).toString(CryptoJS.enc.Base64);
+    const password = PBKDF2(request.body.password, DB.config.db.salt, {
+        keySize: 16
+    }).toString(CryptoJS.enc.Base64);
 
     const user = await DB.users.findOne({
         "auth.login": request.body.login,
