@@ -1,4 +1,5 @@
 interface IConfig {
+    accessRights: Record<string, number>;
     db: {
         database: string;
         protocol: string;
