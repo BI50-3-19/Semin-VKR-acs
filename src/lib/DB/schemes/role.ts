@@ -4,7 +4,7 @@ import { Static, Type } from "@sinclair/typebox";
 
 const roleBox = Type.Object({
     id: Type.Number(),
-    title: Type.String(),
+    name: Type.String(),
     mask: Type.Number()
 });
 
@@ -16,7 +16,7 @@ const roleSchema = new Schema<TRoleBox>({
         required: true,
         unique: true,
     },
-    title: {
+    name: {
         type: Schema.Types.String,
         required: true,
     },
