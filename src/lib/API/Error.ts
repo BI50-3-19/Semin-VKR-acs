@@ -19,6 +19,9 @@ const ERRORS = {
     15: "Schedule not found",
     16: "Schedule already exist",
     17: "All groups with this schedule must be deleted",
+    18: "Area not found",
+    19: "Area already exist",
+    20: "All devices, groups and passes with this area must be deleted",
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;

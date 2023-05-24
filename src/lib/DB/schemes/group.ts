@@ -5,6 +5,7 @@ import { Static, Type } from "@sinclair/typebox";
 const groupBox = Type.Object({
     id: Type.Number(),
     name: Type.String(),
+    areas: Type.Array(Type.Number()),
     scheduleId: Type.Number()
 });
 
@@ -20,6 +21,10 @@ const groupSchema = new Schema<TGroupBox>({
         type: Schema.Types.String,
         required: true,
         unique: true
+    },
+    areas: {
+        type: [Schema.Types.Number],
+        required: true
     },
     scheduleId: {
         type: Schema.Types.Number,

@@ -22,6 +22,7 @@ const deviceSchema = new Schema<TDeviceBox>({
     },
     title: {
         type: Schema.Types.String,
+        unique: true,
         required: true,
     },
     description: {

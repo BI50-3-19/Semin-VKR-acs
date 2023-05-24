@@ -19,6 +19,7 @@ const areaSchema = new Schema<TAreaBox>({
     },
     title: {
         type: Schema.Types.String,
+        unique: true,
         required: true,
     },
     description: {
