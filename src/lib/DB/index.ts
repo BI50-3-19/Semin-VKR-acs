@@ -44,6 +44,7 @@ class DB {
         this.groups = createModel("groups", groupSchema);
         this.roles = createModel("roles", roleSchema);
         this.schedules = createModel("schedules", scheduleSchema);
+
         this.cache = new Cache(this);
     }
 

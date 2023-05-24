@@ -3,6 +3,8 @@ import { DB } from ".";
 import { TRoleBox } from "./schemes/role";
 import { TUserBox } from "./schemes/user";
 import { PipelineStage } from "mongoose";
+import { TAreaBox } from "./schemes/area";
+import { TDeviceBox } from "./schemes/device";
 
 class Cache {
     private _db: DB;
@@ -57,6 +59,42 @@ class Cache {
         return role as TRoleBox;
     }
 
+    public async getArea(id: number, force = false): Promise<TAreaBox> {
+        let area = this.data.get<TAreaBox | null>(`area-${id}`);
+
+        if (area === undefined || force) {
+            area = await this._db.areas.findOne({
+                id
+            }).lean();
+
+            if (area === null) {
+                throw new Error("Area not found");
+            }
+
+            this.data.set(`area-${id}`, area);
+        }
+
+        return area as TAreaBox;
+    }
+
+    public async getDevice(id: number, force = false): Promise<TDeviceBox> {
+        let device = this.data.get<TDeviceBox | null>(`device-${id}`);
+
+        if (device === undefined || force) {
+            device = await this._db.devices.findOne({
+                id
+            }).lean();
+
+            if (device === null) {
+                throw new Error("Device not found");
+            }
+
+            this.data.set(`device-${id}`, device);
+        }
+
+        return device as TDeviceBox;
+    }
+
     public async load(): Promise<void> {
         const [
             lastRoleId,
@@ -67,21 +105,36 @@ class Cache {
             this._getMaxRoleId(),
             this._getMaxUserId(),
             this._getMaxGroupId(),
-            this._getMaxScheduleId()
+            this._getMaxScheduleId(),
+            this._loadAllRoles(),
+            this._loadAllAreas(),
+            this._loadAllDevices()
         ]);
 
         this.lastRoleId = lastRoleId;
         this.lastUserId = lastUserId;
         this.lastGroupId = lastGroupId;
         this.lastScheduleId = lastScheduleId;
-
-        await this._loadAllRoles();
     }
 
     private async _loadAllRoles(): Promise<void> {
         for await (const role of this._db.roles.find().lean()) {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             this.data.set(`role-${role.id}`, role);
+        }
+    }
+
+    private async _loadAllAreas(): Promise<void> {
+        for await (const area of this._db.areas.find().lean()) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            this.data.set(`area-${area.id}`, area);
+        }
+    }
+
+    private async _loadAllDevices(): Promise<void> {
+        for await (const device of this._db.devices.find().lean()) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            this.data.set(`device-${device.id}`, device);
         }
     }
 

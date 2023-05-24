@@ -5,7 +5,8 @@ import { Static, Type } from "@sinclair/typebox";
 const areaBox = Type.Object({
     id: Type.Number(),
     title: Type.String(),
-    description: Type.Optional(Type.String())
+    description: Type.Optional(Type.String()),
+    isLocked: Type.Boolean()
 });
 
 type TAreaBox = Static<typeof areaBox>
@@ -23,6 +24,10 @@ const areaSchema = new Schema<TAreaBox>({
     description: {
         type: Schema.Types.String,
         required: false
+    },
+    isLocked: {
+        type: Schema.Types.Boolean,
+        required: true
     }
 }, {
     versionKey: false
