@@ -69,6 +69,7 @@ server.setErrorHandler((err, request, reply) => {
             });
             return reply.status(200).send({ error: error.toJSON() });
         } else {
+            console.log(err);
             const error = new APIError({
                 code: 0, request
             });
@@ -117,6 +118,32 @@ server.addHook<{
         request.userHasAccess = (right: keyof typeof DB["config"]["accessRights"]): boolean => {
             return utils.hasAccess(right, request.userRole.mask);
         };
+    }
+
+    if (sectionClass.auth === "device-token") {
+        if (!request.body?.token) {
+            throw new APIError({
+                code: 4,
+                request
+            });
+        }
+
+        const device = await DB.devices.findOne({
+            token: request.body.token
+        }).lean();
+
+        if (device === null) {
+            throw new APIError({
+                code: 4,
+                request
+            });
+        }
+
+        void DB.devices.updateOne({
+            id: device.id
+        }, { $set: { lastRequestDate: Date.now() } });
+
+        request.deviceData = device;
     }
 });
 

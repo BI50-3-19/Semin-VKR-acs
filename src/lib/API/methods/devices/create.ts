@@ -29,6 +29,29 @@ server.post("/devices.create", {
         });
     }
 
+    if (prevAreaId !== null && (prevAreaId === nextAreaId)) {
+        throw new APIError({
+            code: 26, request
+        });
+    }
+
+    if (prevAreaId !== null || nextAreaId !== null) {
+        const total = +(prevAreaId !== null) + +(nextAreaId !== null);
+
+        if (total !== (await DB.areas.count({
+            id: {
+                $in: [
+                    prevAreaId,
+                    nextAreaId
+                ]
+            }
+        }))) {
+            throw new APIError({
+                code: 18, request
+            });
+        }
+    }
+
     const id = ++DB.cache.lastAreaId;
 
     const token = PBKDF2(`device-${id}-${Date.now()}`, DB.config.db.salt, {

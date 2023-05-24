@@ -37,11 +37,13 @@ const deviceSchema = new Schema<TDeviceBox>({
     },
     prevAreaId: {
         type: Schema.Types.Number,
-        required: true,
+        required: false,
+        default: null
     },
     nextAreaId: {
         type: Schema.Types.Number,
-        required: true
+        required: false,
+        default: null
     },
     isEnabled: {
         type: Schema.Types.Boolean,
