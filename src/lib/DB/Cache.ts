@@ -15,6 +15,7 @@ class Cache {
     public lastGroupId = 0;
     public lastScheduleId = 0;
     public lastAreaId = 0;
+    public lastPassLogId = 0;
 
     constructor(db: DB) {
         this._db = db;
@@ -102,13 +103,15 @@ class Cache {
             lastUserId,
             lastGroupId,
             lastScheduleId,
-            lastAreaId
+            lastAreaId,
+            lastPassLogId
         ]= await Promise.all([
             this._getMaxRoleId(),
             this._getMaxUserId(),
             this._getMaxGroupId(),
             this._getMaxScheduleId(),
             this._getMaxAreaId(),
+            this._getMaxPassLogId(),
             this._loadAllRoles(),
             this._loadAllAreas(),
             this._loadAllDevices()
@@ -119,6 +122,7 @@ class Cache {
         this.lastGroupId = lastGroupId;
         this.lastScheduleId = lastScheduleId;
         this.lastAreaId = lastAreaId;
+        this.lastPassLogId = lastPassLogId;
     }
 
     private async _loadAllRoles(): Promise<void> {
@@ -254,6 +258,30 @@ class Cache {
         ];
 
         const res = await this._db.areas.aggregate<{_id: number}>(aggregation);
+
+        if (res.length === 0) {
+            return 0;
+        } else {
+            return res[0]._id;
+        }
+    }
+
+    private async _getMaxPassLogId(): Promise<number> {
+        const aggregation: PipelineStage[] = [
+            {
+                $group: {
+                    _id: "$id"
+                }
+            }, {
+                $sort: {
+                    _id: -1
+                }
+            }, {
+                $limit: 1
+            }
+        ];
+
+        const res = await this._db.passLogs.aggregate<{_id: number}>(aggregation);
 
         if (res.length === 0) {
             return 0;

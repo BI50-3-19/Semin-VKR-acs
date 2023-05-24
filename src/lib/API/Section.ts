@@ -1,6 +1,6 @@
 class Section {
     public readonly name: string;
-    public readonly auth: "jwt" | "token" | "none";
+    public readonly auth: "jwt" | "device-token" | "none";
     public readonly methods: string[];
 
     constructor({

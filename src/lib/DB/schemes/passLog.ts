@@ -3,15 +3,21 @@ import { Schema } from "mongoose";
 import { Static, Type } from "@sinclair/typebox";
 
 const passLogBox = Type.Object({
+    id: Type.Number(),
     date: Type.Date(),
     userId: Type.Number(),
-    prevAreaId: Type.Number(),
-    nextAreaId: Type.Number()
+    prevAreaId: Type.Union([Type.Number(), Type.Null()]),
+    nextAreaId: Type.Union([Type.Number(), Type.Null()]),
 });
 
 type TPassLogBox = Static<typeof passLogBox>
 
 const passLogSchema = new Schema<TPassLogBox>({
+    id: {
+        type: Schema.Types.Number,
+        unique: true,
+        required: true
+    },
     date: {
         type: Schema.Types.Date,
         required: true
@@ -22,17 +28,11 @@ const passLogSchema = new Schema<TPassLogBox>({
     },
     prevAreaId: {
         type: Schema.Types.Number,
-        required: true,
-        validate: {
-            validator: (v: number | null): boolean => v == null || typeof v === "number"
-        }
+        required: false
     },
     nextAreaId: {
         type: Schema.Types.Number,
-        required: true,
-        validate: {
-            validator: (v: number | null): boolean => v == null || typeof v === "number"
-        }
+        required: false
     }
 }, {
     versionKey: false

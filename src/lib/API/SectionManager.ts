@@ -96,4 +96,12 @@ sectionManager.add(new Section({
     ]
 }));
 
+sectionManager.add(new Section({
+    name: "acs",
+    auth: "device-token",
+    methods: [
+        "pass"
+    ]
+}));
+
 export default sectionManager;
