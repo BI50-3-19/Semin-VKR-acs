@@ -15,10 +15,10 @@ class Cache {
         });
     }
 
-    public async getUser(id: number): Promise<TUserBox | null> {
+    public async getUser(id: number, force = false): Promise<TUserBox | null> {
         let user = this._cache.get<TRoleBox | null>(`user-${id}`);
 
-        if (user === undefined) {
+        if (user === undefined || force) {
             user = await this._db.users.findOne({
                 id
             }).lean();
@@ -33,10 +33,10 @@ class Cache {
         return user as unknown as TUserBox;
     }
 
-    public async getRole(id: number): Promise<TRoleBox> {
+    public async getRole(id: number, force = false): Promise<TRoleBox> {
         let role = this._cache.get<TRoleBox | null>(`role-${id}`);
 
-        if (role === undefined) {
+        if (role === undefined || force) {
             role = await this._db.roles.findOne({
                 id
             }).lean();

@@ -46,4 +46,12 @@ sectionManager.add(new Section({
     ]
 }));
 
+sectionManager.add(new Section({
+    name: "roles",
+    auth: "jwt",
+    methods: [
+        "edit"
+    ]
+}));
+
 export default sectionManager;
