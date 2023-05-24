@@ -9,6 +9,7 @@ import groupSchema, { TGroupBox } from "./schemes/group";
 import roleSchema, { TRoleBox } from "./schemes/role";
 import scheduleSchema, { TScheduleBox } from "./schemes/schedule";
 import tempPassSchema, { TTempPassBox } from "./schemes/temporaryPasses";
+import passLogSchema, { TPassLogBox } from "./schemes/passLog";
 
 import Cache from "./Cache";
 
@@ -23,6 +24,7 @@ class DB {
     public readonly roles: mongoose.Model<TRoleBox>;
     public readonly schedules: mongoose.Model<TScheduleBox>;
     public readonly tempPasses: mongoose.Model<TTempPassBox>;
+    public readonly passLogs: mongoose.Model<TPassLogBox>;
 
     public readonly cache: Cache;
 
@@ -47,6 +49,7 @@ class DB {
         this.roles = createModel("roles", roleSchema);
         this.schedules = createModel("schedules", scheduleSchema);
         this.tempPasses = createModel("temp-passes", tempPassSchema);
+        this.passLogs = createModel("pass-logs", passLogSchema);
 
         this.cache = new Cache(this);
     }
