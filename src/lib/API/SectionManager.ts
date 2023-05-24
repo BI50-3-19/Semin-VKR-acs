@@ -50,6 +50,7 @@ sectionManager.add(new Section({
     name: "roles",
     auth: "jwt",
     methods: [
+        "create",
         "edit"
     ]
 }));

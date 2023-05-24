@@ -10,7 +10,8 @@ const ERRORS = {
     6: "Invalid OTP code",
     7: "User not found",
     8: "Not enough rights to perform the action",
-    9: "Role not found"
+    9: "Role not found",
+    10: "Role already exist"
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;
