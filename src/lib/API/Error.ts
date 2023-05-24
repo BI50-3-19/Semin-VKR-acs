@@ -12,7 +12,13 @@ const ERRORS = {
     8: "Not enough rights to perform the action",
     9: "Role not found",
     10: "Role already exist",
-    11: "All users with this role must be deleted"
+    11: "All users with this role must be deleted",
+    12: "Group not found",
+    13: "Group already exist",
+    14: "All users with this group must be deleted",
+    15: "Schedule not found",
+    16: "Schedule already exist",
+    17: "All groups with this schedule must be deleted",
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;

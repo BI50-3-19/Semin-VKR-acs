@@ -4,7 +4,8 @@ import { Static, Type } from "@sinclair/typebox";
 
 const groupBox = Type.Object({
     id: Type.Number(),
-    title: Type.String(),
+    name: Type.String(),
+    scheduleId: Type.Number()
 });
 
 type TGroupBox = Static<typeof groupBox>
@@ -15,8 +16,12 @@ const groupSchema = new Schema<TGroupBox>({
         required: true,
         unique: true,
     },
-    title: {
+    name: {
         type: Schema.Types.String,
+        required: true,
+    },
+    scheduleId: {
+        type: Schema.Types.Number,
         required: true,
     }
 }, {

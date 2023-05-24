@@ -10,6 +10,7 @@ class Cache {
     public data: NodeCache;
     public lastRoleId = 0;
     public lastUserId = 0;
+    public lastGroupId = 0;
 
     constructor(db: DB) {
         this._db = db;
@@ -56,8 +57,16 @@ class Cache {
     }
 
     public async load(): Promise<void> {
-        this.lastRoleId = await this._getMaxRoleId();
-        this.lastUserId = await this._getMaxUserId();
+        const [lastRoleId, lastUserId, lastGroupId] = await Promise.all([
+            this._getMaxRoleId(),
+            this._getMaxUserId(),
+            this._getMaxGroupId()
+        ]);
+
+        this.lastRoleId = lastRoleId;
+        this.lastUserId = lastUserId;
+        this.lastGroupId = lastGroupId;
+
         await this._loadAllRoles();
     }
 
@@ -103,6 +112,25 @@ class Cache {
         ];
 
         const [{ _id: max }] = await this._db.users.aggregate<{_id: number}>(aggregation);
+        return max;
+    }
+
+    private async _getMaxGroupId(): Promise<number> {
+        const aggregation: PipelineStage[] = [
+            {
+                $group: {
+                    _id: "$id"
+                }
+            }, {
+                $sort: {
+                    _id: -1
+                }
+            }, {
+                $limit: 1
+            }
+        ];
+
+        const [{ _id: max }] = await this._db.groups.aggregate<{_id: number}>(aggregation);
         return max;
     }
 }
