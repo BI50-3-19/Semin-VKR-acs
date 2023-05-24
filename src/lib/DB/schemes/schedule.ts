@@ -105,6 +105,8 @@ const scheduleSchema = new Schema<TScheduleBox>({
 
 export type { TScheduleBox, TScheduleDayBox };
 
-export { scheduleBox, scheduleDayBox };
+export {
+    scheduleBox, scheduleDayBox, scheduleDaySchema
+};
 
 export default scheduleSchema;

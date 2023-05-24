@@ -8,6 +8,7 @@ import deviceSchema, { TDeviceBox } from "./schemes/device";
 import groupSchema, { TGroupBox } from "./schemes/group";
 import roleSchema, { TRoleBox } from "./schemes/role";
 import scheduleSchema, { TScheduleBox } from "./schemes/schedule";
+import tempPassSchema, { TTempPassBox } from "./schemes/temporaryPasses";
 
 import Cache from "./Cache";
 
@@ -21,6 +22,7 @@ class DB {
     public readonly groups: mongoose.Model<TGroupBox>;
     public readonly roles: mongoose.Model<TRoleBox>;
     public readonly schedules: mongoose.Model<TScheduleBox>;
+    public readonly tempPasses: mongoose.Model<TTempPassBox>;
 
     public readonly cache: Cache;
 
@@ -44,6 +46,7 @@ class DB {
         this.groups = createModel("groups", groupSchema);
         this.roles = createModel("roles", roleSchema);
         this.schedules = createModel("schedules", scheduleSchema);
+        this.tempPasses = createModel("temp-passes", tempPassSchema);
 
         this.cache = new Cache(this);
     }
