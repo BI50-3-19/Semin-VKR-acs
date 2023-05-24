@@ -64,6 +64,7 @@ server.post("/acs.pass", {
         void addLog(log);
         return true;
     };
+
     const denied = (): void => {
         throw new APIError({
             code: 25,
@@ -73,13 +74,14 @@ server.post("/acs.pass", {
 
     const prevAreaId = direction === "next" ? device.prevAreaId : device.nextAreaId;
     const nextAreaId = direction === "prev" ? device.prevAreaId : device.nextAreaId;
+    const areaId = nextAreaId === null ? prevAreaId : nextAreaId;
 
-    if (nextAreaId === null) {
-        // Handle prev area FUUUUUUUCK
-        return true;
+    if (areaId === null) {
+        // Handle this
+        return denied();
     }
 
-    const area = await DB.cache.getArea(nextAreaId);
+    const area = await DB.cache.getArea(areaId);
 
     if (area.isLocked) {
         return denied();
