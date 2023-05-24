@@ -19,6 +19,7 @@ const roleSchema = new Schema<TRoleBox>({
     name: {
         type: Schema.Types.String,
         required: true,
+        unique: true
     },
     mask: {
         type: Schema.Types.Number,
