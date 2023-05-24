@@ -4,18 +4,8 @@ import { Static, Type } from "@sinclair/typebox";
 
 const scheduleDayBox = Type.Object({
     day: Type.Number({ minimum: 0, maximum: 6 }),
-    start: Type.Optional(
-        Type.Object({
-            hour: Type.Number({ minimum: 0, maximum: 23 }),
-            minute: Type.Number({ minimum: 0, maximum: 59 }),
-        })
-    ),
-    end: Type.Optional(
-        Type.Object({
-            hour: Type.Number({ minimum: 0, maximum: 23 }),
-            minute: Type.Number({ minimum: 0, maximum: 59 }),
-        })
-    )
+    start: Type.Optional(Type.Number({ minimum: 0, maximum: 1440 })),
+    end: Type.Optional(Type.Number({ minimum: 0, maximum: 1440 })),
 });
 
 type TScheduleDayBox = Static<typeof scheduleDayBox>
@@ -26,29 +16,11 @@ const scheduleDaySchema = new Schema<TScheduleDayBox>({
         required: true
     },
     start: {
-        type: new Schema<TScheduleDayBox["start"]>({
-            hour: {
-                type: Schema.Types.Number,
-                required: true
-            },
-            minute: {
-                type: Schema.Types.Number,
-                required: true
-            }
-        }, { versionKey: false, _id: false }),
+        type: Schema.Types.Number,
         required: false
     },
     end: {
-        type: new Schema<TScheduleDayBox["end"]>({
-            hour: {
-                type: Schema.Types.Number,
-                required: true
-            },
-            minute: {
-                type: Schema.Types.Number,
-                required: true
-            }
-        }, { versionKey: false, _id: false }),
+        type: Schema.Types.Number,
         required: false
     }
 }, { versionKey: false, _id: false });
@@ -97,6 +69,10 @@ const scheduleSchema = new Schema<TScheduleBox>({
     },
     week: {
         type: [scheduleDaySchema],
+        required: true
+    },
+    isDisable: {
+        type: Schema.Types.Boolean,
         required: true
     }
 }, {
