@@ -51,7 +51,8 @@ sectionManager.add(new Section({
     auth: "jwt",
     methods: [
         "create",
-        "edit"
+        "edit",
+        "delete"
     ]
 }));
 

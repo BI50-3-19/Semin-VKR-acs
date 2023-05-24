@@ -11,7 +11,8 @@ const ERRORS = {
     7: "User not found",
     8: "Not enough rights to perform the action",
     9: "Role not found",
-    10: "Role already exist"
+    10: "Role already exist",
+    11: "All users with this role must be deleted"
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;
