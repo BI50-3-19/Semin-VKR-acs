@@ -9,6 +9,7 @@ server.post("/groups.edit", {
         body: Type.Object({
             id: Type.Number(),
             name: Type.Optional(Type.String()),
+            areas: Type.Optional(Type.Array(Type.Number())),
             scheduleId: Type.Optional(Type.Number())
         })
     }
@@ -19,7 +20,7 @@ server.post("/groups.edit", {
         });
     }
 
-    const { id, name, scheduleId } = request.body;
+    const { id, name, areas, scheduleId } = request.body;
 
     const [isGroupExist, isScheduleExist] = await Promise.all([
         await DB.groups.exists({ id }),
@@ -43,6 +44,7 @@ server.post("/groups.edit", {
     }, {
         $set: {
             name,
+            areas,
             scheduleId
         }
     });

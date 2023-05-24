@@ -8,6 +8,7 @@ server.post("/groups.create", {
     schema: {
         body: Type.Object({
             name: Type.String(),
+            areas: Type.Array(Type.Number()),
             scheduleId: Type.Number()
         })
     }
@@ -18,7 +19,7 @@ server.post("/groups.create", {
         });
     }
 
-    const { name, scheduleId } = request.body;
+    const { name, areas, scheduleId } = request.body;
 
     if ((await DB.groups.exists({ name }))) {
         throw new APIError({
@@ -38,6 +39,7 @@ server.post("/groups.create", {
         {
             id,
             name,
+            areas,
             scheduleId
         }
     ]);
