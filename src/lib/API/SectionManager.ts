@@ -66,4 +66,14 @@ sectionManager.add(new Section({
     ]
 }));
 
+sectionManager.add(new Section({
+    name: "schedules",
+    auth: "jwt",
+    methods: [
+        "create",
+        "edit",
+        "delete"
+    ]
+}));
+
 export default sectionManager;

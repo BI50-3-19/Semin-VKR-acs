@@ -11,6 +11,7 @@ class Cache {
     public lastRoleId = 0;
     public lastUserId = 0;
     public lastGroupId = 0;
+    public lastScheduleId = 0;
 
     constructor(db: DB) {
         this._db = db;
@@ -57,15 +58,22 @@ class Cache {
     }
 
     public async load(): Promise<void> {
-        const [lastRoleId, lastUserId, lastGroupId] = await Promise.all([
+        const [
+            lastRoleId,
+            lastUserId,
+            lastGroupId,
+            lastScheduleId
+        ]= await Promise.all([
             this._getMaxRoleId(),
             this._getMaxUserId(),
-            this._getMaxGroupId()
+            this._getMaxGroupId(),
+            this._getMaxScheduleId()
         ]);
 
         this.lastRoleId = lastRoleId;
         this.lastUserId = lastUserId;
         this.lastGroupId = lastGroupId;
+        this.lastScheduleId = lastScheduleId;
 
         await this._loadAllRoles();
     }
@@ -92,8 +100,13 @@ class Cache {
             }
         ];
 
-        const [{ _id: max }] = await this._db.roles.aggregate<{_id: number}>(aggregation);
-        return max;
+        const res = await this._db.roles.aggregate<{_id: number}>(aggregation);
+
+        if (res.length === 0) {
+            return 0;
+        } else {
+            return res[0]._id;
+        }
     }
 
     private async _getMaxUserId(): Promise<number> {
@@ -111,8 +124,13 @@ class Cache {
             }
         ];
 
-        const [{ _id: max }] = await this._db.users.aggregate<{_id: number}>(aggregation);
-        return max;
+        const res = await this._db.users.aggregate<{_id: number}>(aggregation);
+
+        if (res.length === 0) {
+            return 0;
+        } else {
+            return res[0]._id;
+        }
     }
 
     private async _getMaxGroupId(): Promise<number> {
@@ -130,8 +148,37 @@ class Cache {
             }
         ];
 
-        const [{ _id: max }] = await this._db.groups.aggregate<{_id: number}>(aggregation);
-        return max;
+        const res = await this._db.groups.aggregate<{_id: number}>(aggregation);
+
+        if (res.length === 0) {
+            return 0;
+        } else {
+            return res[0]._id;
+        }
+    }
+
+    private async _getMaxScheduleId(): Promise<number> {
+        const aggregation: PipelineStage[] = [
+            {
+                $group: {
+                    _id: "$id"
+                }
+            }, {
+                $sort: {
+                    _id: -1
+                }
+            }, {
+                $limit: 1
+            }
+        ];
+
+        const res = await this._db.schedules.aggregate<{_id: number}>(aggregation);
+
+        if (res.length === 0) {
+            return 0;
+        } else {
+            return res[0]._id;
+        }
     }
 }
 

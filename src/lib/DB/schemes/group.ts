@@ -19,6 +19,7 @@ const groupSchema = new Schema<TGroupBox>({
     name: {
         type: Schema.Types.String,
         required: true,
+        unique: true
     },
     scheduleId: {
         type: Schema.Types.Number,

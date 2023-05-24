@@ -3,17 +3,17 @@ import { Schema } from "mongoose";
 import { Static, Type } from "@sinclair/typebox";
 
 const scheduleDayBox = Type.Object({
-    day: Type.Number(),
+    day: Type.Number({ minimum: 0, maximum: 6 }),
     start: Type.Optional(
         Type.Object({
-            hour: Type.Number(),
-            minute: Type.Number()
+            hour: Type.Number({ minimum: 0, maximum: 23 }),
+            minute: Type.Number({ minimum: 0, maximum: 59 }),
         })
     ),
     end: Type.Optional(
         Type.Object({
-            hour: Type.Number(),
-            minute: Type.Number()
+            hour: Type.Number({ minimum: 0, maximum: 23 }),
+            minute: Type.Number({ minimum: 0, maximum: 59 }),
         })
     )
 });
@@ -55,14 +55,18 @@ const scheduleDaySchema = new Schema<TScheduleDayBox>({
 
 const scheduleBox = Type.Object({
     id: Type.Number(),
-    title: Type.String(),
+    name: Type.String(),
     range: Type.Optional(
         Type.Object({
             start: Type.Date(),
             end: Type.Date()
         })
     ),
-    week: Type.Array(scheduleDayBox)
+    week: Type.Array(scheduleDayBox, {
+        minItems: 1,
+        maxItems: 7
+    }),
+    isDisable: Type.Boolean()
 });
 
 type TScheduleBox = Static<typeof scheduleBox>
@@ -73,8 +77,9 @@ const scheduleSchema = new Schema<TScheduleBox>({
         required: true,
         unique: true,
     },
-    title: {
+    name: {
         type: Schema.Types.String,
+        unique: true,
         required: true
     },
     range: {
@@ -98,8 +103,8 @@ const scheduleSchema = new Schema<TScheduleBox>({
     versionKey: false
 });
 
-export type { TScheduleBox };
+export type { TScheduleBox, TScheduleDayBox };
 
-export { scheduleBox };
+export { scheduleBox, scheduleDayBox };
 
 export default scheduleSchema;
