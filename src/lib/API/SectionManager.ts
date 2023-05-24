@@ -76,4 +76,24 @@ sectionManager.add(new Section({
     ]
 }));
 
+sectionManager.add(new Section({
+    name: "areas",
+    auth: "jwt",
+    methods: [
+        "create",
+        "edit",
+        "delete"
+    ]
+}));
+
+sectionManager.add(new Section({
+    name: "devices",
+    auth: "jwt",
+    methods: [
+        "create",
+        "edit",
+        "delete"
+    ]
+}));
+
 export default sectionManager;

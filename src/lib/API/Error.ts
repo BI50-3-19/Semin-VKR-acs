@@ -22,6 +22,9 @@ const ERRORS = {
     18: "Area not found",
     19: "Area already exist",
     20: "All devices, groups and passes with this area must be deleted",
+    21: "Device not found",
+    22: "Device already exist",
+    23: "It is necessary to disable the device, and remove the areas",
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;

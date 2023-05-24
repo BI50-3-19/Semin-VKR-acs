@@ -9,6 +9,7 @@ const deviceBox = Type.Object({
     token: Type.String(),
     prevAreaId: Type.Union([Type.Number(), Type.Null()]),
     nextAreaId: Type.Union([Type.Number(), Type.Null()]),
+    isEnabled: Type.Boolean(),
     lastRequestDate: Type.Optional(Type.Date())
 });
 
@@ -41,6 +42,10 @@ const deviceSchema = new Schema<TDeviceBox>({
     nextAreaId: {
         type: Schema.Types.Number,
         required: true
+    },
+    isEnabled: {
+        type: Schema.Types.Boolean,
+        required: true,
     },
     lastRequestDate: {
         type: Schema.Types.Date,
