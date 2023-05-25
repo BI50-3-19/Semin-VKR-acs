@@ -5,7 +5,8 @@ import { Static, Type } from "@sinclair/typebox";
 enum SecurityIncidents {
     UserNotFound = "user-not-found",
     AreaNotFound = "area-not-found",
-    EnterWithoutExit = "new-enter-without-exit"
+    EnterWithoutExit = "new-enter-without-exit",
+    EnterWithoutAccess = "enter-without-access"
 }
 
 const securityIncidentCreatorAcs = Type.Object({
@@ -31,25 +32,21 @@ const securityIncidentBox = Type.Intersect([
         creator: securityIncidentCreator
     }),
     Type.Union([
-        Type.Union([
-            Type.Object({
-                type: Type.Literal(SecurityIncidents.UserNotFound),
-                creator: securityIncidentCreatorAcs
-            }),
-            Type.Object({
-                type: Type.Literal(SecurityIncidents.UserNotFound),
-                creator: securityIncidentCreatorUser
-            }),
-        ]),
+        Type.Object({
+            type: Type.Literal(SecurityIncidents.UserNotFound)
+        }),
         Type.Object({
             type: Type.Literal(SecurityIncidents.AreaNotFound),
-            creator: securityIncidentCreatorAcs,
             areaId: Type.Number()
         }),
         Type.Object({
             type: Type.Literal(SecurityIncidents.EnterWithoutExit),
             prevPassLogId: Type.Number(),
             passLogId: Type.Number()
+        }),
+        Type.Object({
+            type: Type.Literal(SecurityIncidents.EnterWithoutAccess),
+            areaId: Type.Number()
         })
     ])
 ]);

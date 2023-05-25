@@ -23,7 +23,7 @@ const passLogCreatorUser = Type.Object({
 const passLogSuccessfulBox = Type.Object({
     type: Type.Literal("successful"),
     prevAreaId: Type.Union([Type.Number(), Type.Null()]),
-    nextAreaId: Type.Union([Type.Number(), Type.Null()]),
+    areaId: Type.Union([Type.Number(), Type.Null()]),
     creator: Type.Union([passLogCreatorAcs, passLogCreatorUser])
 });
 
@@ -35,6 +35,7 @@ const passLogUnsuccessfulBox = Type.Intersect([
     Type.Union([
         Type.Object({
             reason: Type.Literal(PassLogUnsuccesfulReasons.Custom),
+            areaId: Type.Optional(Type.Number()),
             creator: passLogCreatorUser,
             message: Type.String(),
         }),
@@ -89,7 +90,7 @@ const passLogSchema = new Schema<TPassFullLogBox>({
         type: Schema.Types.Number,
         required: false
     },
-    nextAreaId: {
+    areaId: {
         type: Schema.Types.Number,
         required: false
     }

@@ -103,7 +103,7 @@ server.post("/acs.pass", {
                     deviceId: device.id
                 },
                 prevAreaId,
-                nextAreaId,
+                areaId: nextAreaId,
             }
         });
         return true;

@@ -110,7 +110,8 @@ sectionManager.add(new Section({
     methods: [
         "getTempKey",
         "isValidTempKey",
-        "checkAccessToArea"
+        "checkAccessToArea",
+        "allowAccessToArea"
     ]
 }));
 

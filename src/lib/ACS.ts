@@ -103,7 +103,7 @@ class ACS {
 
         if (latest === null || latest.type === "unsuccessful" || log.type === "unsuccessful" || (
             latest.prevAreaId !== log.prevAreaId &&
-            latest.nextAreaId !== log.nextAreaId
+            latest.areaId !== log.areaId
         )) {
             return fullLog;
         }
