@@ -3,7 +3,7 @@ import { Schema } from "mongoose";
 import { Static, Type } from "@sinclair/typebox";
 
 enum PassLogUnsuccesfulReasons {
-    Custom = "custom",
+    SecurityDenyAccess = "security-deny-access",
     DisabledDevice = "device-is-disabled",
     OutsideUserSchedule = "outside-user-schedule",
     UserNotAuthorized = "unauthorized-user",
@@ -34,10 +34,11 @@ const passLogUnsuccessfulBox = Type.Intersect([
     }),
     Type.Union([
         Type.Object({
-            reason: Type.Literal(PassLogUnsuccesfulReasons.Custom),
-            areaId: Type.Optional(Type.Number()),
+            reason: Type.Literal(PassLogUnsuccesfulReasons.SecurityDenyAccess),
+            areaId: Type.Number(),
             creator: passLogCreatorUser,
-            message: Type.String(),
+            reasonId: Type.Optional(Type.Number()),
+            comment: Type.Optional(Type.String()),
         }),
         Type.Object({
             reason: Type.Literal(PassLogUnsuccesfulReasons.DisabledDevice),

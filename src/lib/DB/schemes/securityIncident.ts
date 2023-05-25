@@ -6,7 +6,8 @@ enum SecurityIncidents {
     UserNotFound = "user-not-found",
     AreaNotFound = "area-not-found",
     EnterWithoutExit = "new-enter-without-exit",
-    EnterWithoutAccess = "enter-without-access"
+    EnterWithoutAccess = "enter-without-access",
+    SecurityDenyAccessWithoutReason = "security-deny-access"
 }
 
 const securityIncidentCreatorAcs = Type.Object({
@@ -47,6 +48,11 @@ const securityIncidentBox = Type.Intersect([
         Type.Object({
             type: Type.Literal(SecurityIncidents.EnterWithoutAccess),
             areaId: Type.Number()
+        }),
+        Type.Object({
+            type: Type.Literal(SecurityIncidents.SecurityDenyAccessWithoutReason),
+            creator: securityIncidentCreatorUser,
+            passLogId: Type.Number()
         })
     ])
 ]);
