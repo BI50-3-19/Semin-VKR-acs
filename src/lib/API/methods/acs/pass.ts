@@ -72,7 +72,7 @@ server.post("/acs.pass", {
     const area = await DB.cache.getArea(areaId);
 
     if (area.isLocked) {
-        void ACS.addPassLog({
+        await ACS.addPassLog({
             user,
             log: {
                 type: "unsuccessful",
@@ -94,7 +94,7 @@ server.post("/acs.pass", {
     });
 
     if (isAllow) {
-        void ACS.addPassLog({
+        await ACS.addPassLog({
             user,
             log: {
                 type: "successful",
@@ -108,7 +108,7 @@ server.post("/acs.pass", {
         });
         return true;
     } else {
-        void ACS.addPassLog({
+        await ACS.addPassLog({
             user,
             log: {
                 type: "unsuccessful",
