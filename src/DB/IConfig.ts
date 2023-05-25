@@ -4,6 +4,7 @@ interface IConfig {
     accessRights: Record<string, number>;
     db: {
         database: string;
+        filesDatabase: string;
         protocol: string;
         address: string;
         login: string;

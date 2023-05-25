@@ -37,7 +37,8 @@ const userBox = Type.Object({
     auth: Type.Optional(userAuthBox),
     name: Type.String(),
     surname: Type.String(),
-    patronymic: Type.Optional(Type.String())
+    patronymic: Type.Optional(Type.String()),
+    hasAvatar: Type.Boolean()
 });
 
 type TUserBox = Static<typeof userBox>
@@ -75,6 +76,10 @@ const userSchema = new Schema<TUserBox>({
     patronymic: {
         type: Schema.Types.String,
         required: false
+    },
+    hasAvatar: {
+        type: Schema.Types.Boolean,
+        required: true
     }
 }, {
     versionKey: false

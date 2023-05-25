@@ -14,6 +14,7 @@ import securityReasonSchema, { TSecurityReasonBox } from "./schemes/reason";
 import securityIncidentSchema, { TFullSecurityIncidentBox } from "./schemes/securityIncident";
 
 import Cache from "./Cache";
+import Storage from "./Storage";
 
 class DB {
     public readonly config = config;
@@ -29,6 +30,8 @@ class DB {
     public readonly passLogs: mongoose.Model<TPassFullLogBox>;
     public readonly securityIncidents: mongoose.Model<TFullSecurityIncidentBox>;
     public readonly securityReasons: mongoose.Model<TSecurityReasonBox>;
+
+    public readonly files: Storage;
 
     public readonly cache: Cache;
 
@@ -58,6 +61,7 @@ class DB {
         this.securityReasons = createModel("security-reasons", securityReasonSchema);
 
         this.cache = new Cache(this);
+        this.files = new Storage(this);
     }
 
     public async connect(): Promise<void> {
