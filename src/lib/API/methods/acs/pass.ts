@@ -2,138 +2,124 @@ import server from "../..";
 
 import { Type } from "@sinclair/typebox";
 import DB from "../../../DB";
-import APIError from "../../Error";
-import { TPassLogBox } from "../../../DB/schemes/passLog";
+import ACS from "../../../ACS";
+import { SecurityIncidents } from "../../../DB/schemes/securityIncident";
+import { PassLogUnsuccesfulReasons } from "../../../DB/schemes/passLog";
 
 const DIRECTIONS = ["next", "prev"] as const;
-
-const addLog = async (current: Omit<TPassLogBox, "id">): Promise<void> => {
-    const id = ++DB.cache.lastPassLogId;
-    const latest = await DB.passLogs.findOne({
-        userId: current.userId
-    }).sort({
-        date: -1
-    }).lean();
-
-    await DB.passLogs.insertMany([
-        {
-            ...current,
-            id
-        }
-    ]);
-
-    if (latest === null || (
-        latest.prevAreaId !== current.prevAreaId &&
-        latest.nextAreaId !== current.nextAreaId
-    )) {
-        return;
-    }
-
-    // Suspicious
-};
 
 server.post("/acs.pass", {
     schema: {
         body: Type.Object({
             userId: Type.Number(),
             direction: Type.Union(DIRECTIONS.map(x => Type.Literal(x)))
-        })
+        }),
+        response: {
+            200: Type.Boolean()
+        }
     }
 }, async (request) => {
     const device = request.deviceData;
     const { userId, direction } = request.body;
     const date = new Date();
 
-    if (device.isEnabled === false) {
-        throw new APIError({
-            code: 24,
-            request
-        });
-    }
-
     const user = await DB.cache.getUser(userId);
 
     if (user === null) {
-        throw new APIError({
-            code: 7,
-            request
+        void ACS.addSecurityIncident({
+            type: SecurityIncidents.UserNotFound,
+            userId,
+            creator: {
+                type: "acs",
+                deviceId: device.id
+            }
         });
+        return false;
     }
 
-    const allowed = (log: Omit<TPassLogBox, "id">): boolean => {
-        void addLog(log);
-        return true;
-    };
-
-    const denied = (): void => {
-        throw new APIError({
-            code: 25,
-            request
+    if (device.isEnabled === false) {
+        void ACS.addPassLog({
+            user,
+            log: {
+                type: "unsuccessful",
+                reason: PassLogUnsuccesfulReasons.DisabledDevice,
+                creator: {
+                    type: "acs",
+                    deviceId: device.id
+                }
+            }
         });
-    };
+        return false;
+    }
 
     const prevAreaId = direction === "next" ? device.prevAreaId : device.nextAreaId;
     const nextAreaId = direction === "prev" ? device.prevAreaId : device.nextAreaId;
     const areaId = nextAreaId === null ? prevAreaId : nextAreaId;
 
     if (areaId === null) {
-        // Handle this
-        return denied();
+        void ACS.addSecurityIncident({
+            type: SecurityIncidents.AreaNotFound,
+            areaId: 0,
+            userId: user.id,
+            creator: {
+                type: "acs",
+                deviceId: device.id
+            }
+        });
+        return false;
     }
 
     const area = await DB.cache.getArea(areaId);
 
     if (area.isLocked) {
-        return denied();
-    }
-
-    const userGroups = await DB.groups.find({
-        id: { $in: user.groups },
-        areas: { $in: [nextAreaId] },
-    });
-
-    if (userGroups.length === 0) {
-        return denied();
-    }
-
-    const currentDay = date.getDay();
-    const schedules = await DB.schedules.find({
-        id: { $in: userGroups.map(x => x.scheduleId) },
-        "week.day": currentDay,
-        isDisable: false
-    });
-
-    if (schedules.length === 0) {
-        return denied();
-    }
-
-    const days = schedules.map(x => x.week).flat().filter(x => x.day === currentDay);
-
-    if (days.some(x => x.start === undefined && x.end === undefined)) {
-        return allowed({
-            date,
-            prevAreaId,
-            nextAreaId,
-            userId
+        void ACS.addPassLog({
+            user,
+            log: {
+                type: "unsuccessful",
+                reason: PassLogUnsuccesfulReasons.AreaIsLocked,
+                areaId: area.id,
+                creator: {
+                    type: "acs",
+                    deviceId: device.id
+                }
+            }
         });
+        return false;
     }
 
-    const totalCurrentMinutes = date.getHours() * 60 + date.getMinutes();
+    const isAllow = await ACS.hasAccess({
+        user,
+        date,
+        area
+    });
 
-    for (const day of days) {
-        if (!day.start || !day.end) {
-            continue;
-        }
-
-        if (day.start <= totalCurrentMinutes && totalCurrentMinutes <= day.end) {
-            return allowed({
-                date,
+    if (isAllow) {
+        void ACS.addPassLog({
+            user,
+            log: {
+                type: "successful",
+                creator: {
+                    type: "acs",
+                    deviceId: device.id
+                },
                 prevAreaId,
                 nextAreaId,
-                userId
-            });
-        }
+            }
+        });
+        return true;
+    } else {
+        void ACS.addPassLog({
+            user,
+            log: {
+                type: "unsuccessful",
+                reason: PassLogUnsuccesfulReasons.OutsideUserSchedule,
+                areaId: area.id,
+                creator: {
+                    type: "acs",
+                    deviceId: device.id
+                },
+            }
+        });
+        return false;
     }
-
-    return denied();
 });

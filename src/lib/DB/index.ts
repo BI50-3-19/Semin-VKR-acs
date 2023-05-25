@@ -9,8 +9,8 @@ import groupSchema, { TGroupBox } from "./schemes/group";
 import roleSchema, { TRoleBox } from "./schemes/role";
 import scheduleSchema, { TScheduleBox } from "./schemes/schedule";
 import tempPassSchema, { TTempPassBox } from "./schemes/temporaryPasses";
-import passLogSchema, { TPassLogBox } from "./schemes/passLog";
-import securityIncidentSchema, { TSecurityIncidentBox } from "./schemes/securityIncident";
+import passLogSchema, { TPassFullLogBox } from "./schemes/passLog";
+import securityIncidentSchema, { TFullSecurityIncidentBox } from "./schemes/securityIncident";
 
 import Cache from "./Cache";
 
@@ -25,8 +25,8 @@ class DB {
     public readonly roles: mongoose.Model<TRoleBox>;
     public readonly schedules: mongoose.Model<TScheduleBox>;
     public readonly tempPasses: mongoose.Model<TTempPassBox>;
-    public readonly passLogs: mongoose.Model<TPassLogBox>;
-    public readonly securityIncidents: mongoose.Model<TSecurityIncidentBox>;
+    public readonly passLogs: mongoose.Model<TPassFullLogBox>;
+    public readonly securityIncidents: mongoose.Model<TFullSecurityIncidentBox>;
 
     public readonly cache: Cache;
 

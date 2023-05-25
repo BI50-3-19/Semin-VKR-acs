@@ -33,6 +33,7 @@ const userBox = Type.Object({
     id: Type.Number(),
     roleId: Type.Number(),
     groups: Type.Array(Type.Number()),
+    lastPassId: Type.Optional(Type.Number()),
     auth: Type.Optional(userAuthBox),
     name: Type.String(),
     surname: Type.String(),
@@ -52,6 +53,10 @@ const userSchema = new Schema<TUserBox>({
         required: true,
     },
     groups: {
+        type: [Schema.Types.Number],
+        required: false
+    },
+    lastPassId: {
         type: [Schema.Types.Number],
         required: false
     },

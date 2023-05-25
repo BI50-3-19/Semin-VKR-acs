@@ -2,17 +2,76 @@ import { Schema } from "mongoose";
 
 import { Static, Type } from "@sinclair/typebox";
 
-const passLogBox = Type.Object({
-    id: Type.Number(),
-    date: Type.Date(),
-    userId: Type.Number(),
-    prevAreaId: Type.Union([Type.Number(), Type.Null()]),
-    nextAreaId: Type.Union([Type.Number(), Type.Null()]),
+enum PassLogUnsuccesfulReasons {
+    Custom = "custom",
+    DisabledDevice = "device-is-disabled",
+    OutsideUserSchedule = "outside-user-schedule",
+    UserNotAuthorized = "unauthorized-user",
+    AreaIsLocked = "area-is-locked",
+}
+
+const passLogCreatorAcs = Type.Object({
+    type: Type.Literal("acs"),
+    deviceId: Type.Number()
 });
 
-type TPassLogBox = Static<typeof passLogBox>
+const passLogCreatorUser = Type.Object({
+    type: Type.Literal("user"),
+    userId: Type.Number()
+});
 
-const passLogSchema = new Schema<TPassLogBox>({
+const passLogSuccessfulBox = Type.Object({
+    type: Type.Literal("successful"),
+    prevAreaId: Type.Union([Type.Number(), Type.Null()]),
+    nextAreaId: Type.Union([Type.Number(), Type.Null()]),
+    creator: Type.Union([passLogCreatorAcs, passLogCreatorUser])
+});
+
+const passLogUnsuccessfulBox = Type.Intersect([
+    Type.Object({
+        type: Type.Literal("unsuccessful"),
+        creator: Type.Union([passLogCreatorAcs, passLogCreatorUser])
+    }),
+    Type.Union([
+        Type.Object({
+            reason: Type.Literal(PassLogUnsuccesfulReasons.Custom),
+            creator: passLogCreatorUser,
+            message: Type.String(),
+        }),
+        Type.Object({
+            reason: Type.Literal(PassLogUnsuccesfulReasons.DisabledDevice),
+            creator: passLogCreatorAcs,
+        }),
+        Type.Object({
+            reason: Type.Literal(PassLogUnsuccesfulReasons.OutsideUserSchedule),
+            areaId: Type.Number()
+        }),
+        Type.Object({
+            reason: Type.Literal(PassLogUnsuccesfulReasons.AreaIsLocked),
+            areaId: Type.Number()
+        }),
+        Type.Object({
+            reason: Type.Literal(PassLogUnsuccesfulReasons.UserNotAuthorized),
+            areaId: Type.Number()
+        })
+    ])
+]);
+
+const passLogBox = Type.Union([passLogSuccessfulBox, passLogUnsuccessfulBox]);
+
+const passFullLogBox = Type.Intersect([
+    Type.Object({
+        id: Type.Number(),
+        date: Type.Date(),
+        userId: Type.Number()
+    }),
+    passLogBox
+]);
+
+type TPassLogBox = Static<typeof passLogBox>
+type TPassFullLogBox = Static<typeof passFullLogBox>
+
+const passLogSchema = new Schema<TPassFullLogBox>({
     id: {
         type: Schema.Types.Number,
         unique: true,
@@ -38,8 +97,8 @@ const passLogSchema = new Schema<TPassLogBox>({
     versionKey: false
 });
 
-export type { TPassLogBox };
+export type { TPassFullLogBox, TPassLogBox };
 
-export { passLogBox };
+export { PassLogUnsuccesfulReasons, passFullLogBox };
 
 export default passLogSchema;

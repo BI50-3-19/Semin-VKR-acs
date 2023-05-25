@@ -3,12 +3,8 @@ import { Schema } from "mongoose";
 import { Static, Type } from "@sinclair/typebox";
 
 enum SecurityIncidents {
-    OutsideUserSchedule = "outside-user-schedule",
-    DisabledDevice = "device-is-disabled",
     UserNotFound = "user-not-found",
-    UserNotAuthorized = "unauthorized-user",
     AreaNotFound = "area-not-found",
-    AreaIsLocked = "area-is-locked",
     EnterWithoutExit = "new-enter-without-exit"
 }
 
@@ -36,14 +32,6 @@ const securityIncidentBox = Type.Intersect([
         message: Type.Optional(Type.String())
     }),
     Type.Union([
-        Type.Object({
-            type: Type.Literal(SecurityIncidents.DisabledDevice),
-            creator: securityIncidentCreatorAcs,
-        }),
-        Type.Object({
-            type: Type.Literal(SecurityIncidents.OutsideUserSchedule),
-            areaId: Type.Number()
-        }),
         Type.Union([
             Type.Object({
                 type: Type.Literal(SecurityIncidents.UserNotFound),
@@ -58,14 +46,6 @@ const securityIncidentBox = Type.Intersect([
         Type.Object({
             type: Type.Literal(SecurityIncidents.AreaNotFound),
             creator: securityIncidentCreatorAcs,
-            areaId: Type.Number()
-        }),
-        Type.Object({
-            type: Type.Literal(SecurityIncidents.AreaIsLocked),
-            areaId: Type.Number()
-        }),
-        Type.Object({
-            type: Type.Literal(SecurityIncidents.UserNotAuthorized),
             areaId: Type.Number()
         }),
         Type.Object({
