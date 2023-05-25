@@ -28,8 +28,7 @@ type TSecurityIncidentCreatorBox = Static<typeof securityIncidentCreator>;
 const securityIncidentBox = Type.Intersect([
     Type.Object({
         userId: Type.Number(),
-        creator: securityIncidentCreator,
-        message: Type.Optional(Type.String())
+        creator: securityIncidentCreator
     }),
     Type.Union([
         Type.Union([
@@ -39,8 +38,7 @@ const securityIncidentBox = Type.Intersect([
             }),
             Type.Object({
                 type: Type.Literal(SecurityIncidents.UserNotFound),
-                creator: securityIncidentCreatorUser,
-                message: Type.String()
+                creator: securityIncidentCreatorUser
             }),
         ]),
         Type.Object({
@@ -91,10 +89,6 @@ const securityIncidentSchema = new Schema<TFullSecurityIncidentBox>({
     },
     areaId: {
         type: Schema.Types.Number,
-        required: false
-    },
-    message: {
-        type: Schema.Types.String,
         required: false
     },
     creator: {
