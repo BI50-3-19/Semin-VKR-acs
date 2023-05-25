@@ -54,7 +54,7 @@ class Cache {
         return user as unknown as TUserBox;
     }
 
-    public async getRole(id: number, force = false): Promise<TRoleBox> {
+    public async getRole(id: number, force = false): Promise<TRoleBox | null> {
         let role = this.data.get<TRoleBox | null>(`role-${id}`);
 
         if (role === undefined || force) {
@@ -63,7 +63,7 @@ class Cache {
             }).lean();
 
             if (role === null) {
-                throw new Error("Role not found");
+                return null;
             }
 
             this.data.set(`role-${id}`, role);
@@ -72,7 +72,7 @@ class Cache {
         return role as TRoleBox;
     }
 
-    public async getSecurityReason(id: number, force = false): Promise<TSecurityReasonBox> {
+    public async getSecurityReason(id: number, force = false): Promise<TSecurityReasonBox | null> {
         let reason = this.data.get<TSecurityReasonBox | null>(`security-reason-${id}`);
 
         if (reason === undefined || force) {
@@ -81,7 +81,7 @@ class Cache {
             }).lean();
 
             if (reason === null) {
-                throw new Error("SecurityReason not found");
+                return null;
             }
 
             this.data.set(`security-reason-${id}`, reason, 0);
@@ -90,7 +90,7 @@ class Cache {
         return reason as TSecurityReasonBox;
     }
 
-    public async getArea(id: number, force = false): Promise<TAreaBox> {
+    public async getArea(id: number, force = false): Promise<TAreaBox | null> {
         let area = this.data.get<TAreaBox | null>(`area-${id}`);
 
         if (area === undefined || force) {
@@ -99,7 +99,7 @@ class Cache {
             }).lean();
 
             if (area === null) {
-                throw new Error("Area not found");
+                return null;
             }
 
             this.data.set(`area-${id}`, area);
@@ -108,7 +108,7 @@ class Cache {
         return area as TAreaBox;
     }
 
-    public async getDevice(id: number, force = false): Promise<TDeviceBox> {
+    public async getDevice(id: number, force = false): Promise<TDeviceBox | null> {
         let device = this.data.get<TDeviceBox | null>(`device-${id}`);
 
         if (device === undefined || force) {
@@ -117,7 +117,7 @@ class Cache {
             }).lean();
 
             if (device === null) {
-                throw new Error("Device not found");
+                return null;
             }
 
             this.data.set(`device-${id}`, device);

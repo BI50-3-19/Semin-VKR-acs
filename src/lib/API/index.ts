@@ -15,6 +15,8 @@ import sectionManager from "./SectionManager";
 
 import { TUserBox } from "../DB/schemes/user";
 import utils from "../utils";
+import ACS from "../ACS";
+import { SecurityIncidents } from "../DB/schemes/securityIncident";
 
 const server = Fastify({
     https: (DB.config.server.cert !== "" && DB.config.server.key !== "") ? {
@@ -112,8 +114,29 @@ server.addHook<{
             });
         }
 
-        request.userData = await DB.cache.getUser(request.user.id) as TUserBox;
-        request.userRole = await DB.cache.getRole(request.userData.roleId);
+        const user = await DB.cache.getUser(request.user.id);
+        if (user === null) {
+            void ACS.addSecurityIncident({
+                type: SecurityIncidents.UserNotFound,
+                userId: request.user.id,
+                creator: {
+                    type: "user",
+                    userId: request.user.id
+                }
+            });
+            throw new APIError({
+                code: 7, request
+            });
+        }
+        request.userData = user;
+
+        const role = await DB.cache.getRole(request.userData.roleId);
+        if (role === null) {
+            throw new APIError({
+                code: 9, request
+            });
+        }
+        request.userRole = role;
 
         request.userHasAccess = (right: keyof typeof DB["config"]["accessRights"]): boolean => {
             return utils.hasAccess(right, request.userRole.mask);

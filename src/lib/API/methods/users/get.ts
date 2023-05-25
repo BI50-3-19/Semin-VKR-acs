@@ -32,7 +32,14 @@ server.post("/users.get", {
             });
         }
 
-        role = await DB.cache.getRole(user.roleId);
+        const userRole = await DB.cache.getRole(user.roleId);
+        if (userRole === null) {
+            throw new APIError({
+                code: 9, request
+            });
+        }
+
+        role = userRole;
     }
 
     return {

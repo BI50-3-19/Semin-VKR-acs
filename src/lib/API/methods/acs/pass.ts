@@ -5,6 +5,7 @@ import DB from "../../../DB";
 import ACS from "../../../ACS";
 import { SecurityIncidents } from "../../../DB/schemes/securityIncident";
 import { PassLogUnsuccesfulReasons } from "../../../DB/schemes/passLog";
+import APIError from "../../Error";
 
 const DIRECTIONS = ["next", "prev"] as const;
 
@@ -70,6 +71,21 @@ server.post("/acs.pass", {
     }
 
     const area = await DB.cache.getArea(areaId);
+
+    if (area === null) {
+        void ACS.addSecurityIncident({
+            type: SecurityIncidents.AreaNotFound,
+            areaId,
+            userId,
+            creator: {
+                type: "acs",
+                deviceId: device.id
+            }
+        });
+        throw new APIError({
+            code: 18, request
+        });
+    }
 
     if (area.isLocked) {
         await ACS.addPassLog({

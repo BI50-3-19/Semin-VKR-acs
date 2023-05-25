@@ -65,6 +65,22 @@ server.post("/security.allowAccessToArea", {
     }
 
     const area = await DB.cache.getArea(areaId);
+
+    if (area === null) {
+        void ACS.addSecurityIncident({
+            type: SecurityIncidents.AreaNotFound,
+            areaId,
+            userId,
+            creator: {
+                type: "user",
+                userId: securityId
+            }
+        });
+        throw new APIError({
+            code: 18, request
+        });
+    }
+
     const isAllow = await ACS.hasAccess({
         user,
         date,

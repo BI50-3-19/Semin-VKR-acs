@@ -75,7 +75,33 @@ server.post("/security.denyAccessToArea", {
         });
     }
 
+    if (reasonId !== undefined) {
+        const reason = await DB.cache.getSecurityReason(reasonId);
+
+        if (reason === null) {
+            throw new APIError({
+                code: 27, request
+            });
+        }
+    }
+
     const area = await DB.cache.getArea(areaId);
+
+    if (area === null) {
+        void ACS.addSecurityIncident({
+            type: SecurityIncidents.AreaNotFound,
+            areaId,
+            userId,
+            creator: {
+                type: "user",
+                userId: securityId
+            }
+        });
+        throw new APIError({
+            code: 18, request
+        });
+    }
+
     const isAllow = await ACS.hasAccess({
         user,
         date,
