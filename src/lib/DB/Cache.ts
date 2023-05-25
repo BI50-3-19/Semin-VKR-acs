@@ -5,6 +5,7 @@ import { TUserBox } from "./schemes/user";
 import { PipelineStage } from "mongoose";
 import { TAreaBox } from "./schemes/area";
 import { TDeviceBox } from "./schemes/device";
+import { TSecurityReasonBox } from "./schemes/reason";
 
 class Cache {
     private _db: DB;
@@ -17,6 +18,7 @@ class Cache {
     public lastAreaId = 0;
     public lastPassLogId = 0;
     public lastSecurityIncidentId = 0;
+    public lastSecurityReasonId = 0;
 
     constructor(db: DB) {
         this._db = db;
@@ -70,6 +72,24 @@ class Cache {
         return role as TRoleBox;
     }
 
+    public async getSecurityReason(id: number, force = false): Promise<TSecurityReasonBox> {
+        let reason = this.data.get<TSecurityReasonBox | null>(`security-reason-${id}`);
+
+        if (reason === undefined || force) {
+            reason = await this._db.securityReasons.findOne({
+                id
+            }).lean();
+
+            if (reason === null) {
+                throw new Error("SecurityReason not found");
+            }
+
+            this.data.set(`security-reason-${id}`, reason, 0);
+        }
+
+        return reason as TSecurityReasonBox;
+    }
+
     public async getArea(id: number, force = false): Promise<TAreaBox> {
         let area = this.data.get<TAreaBox | null>(`area-${id}`);
 
@@ -114,7 +134,8 @@ class Cache {
             lastScheduleId,
             lastAreaId,
             lastPassLogId,
-            lastSecurityIncidentId
+            lastSecurityIncidentId,
+            lastSecurityReasonId
         ]= await Promise.all([
             this._getMaxId("roles"),
             this._getMaxId("users"),
@@ -123,9 +144,11 @@ class Cache {
             this._getMaxId("areas"),
             this._getMaxId("passLogs"),
             this._getMaxId("securityIncidents"),
+            this._getMaxId("securityReasons"),
             this._loadAllRoles(),
             this._loadAllAreas(),
-            this._loadAllDevices()
+            this._loadAllDevices(),
+            this._loadAllSecurityReasons()
         ]);
 
         this.lastRoleId = lastRoleId;
@@ -135,26 +158,34 @@ class Cache {
         this.lastAreaId = lastAreaId;
         this.lastPassLogId = lastPassLogId;
         this.lastSecurityIncidentId = lastSecurityIncidentId;
+        this.lastSecurityReasonId = lastSecurityReasonId;
     }
 
     private async _loadAllRoles(): Promise<void> {
         for await (const role of this._db.roles.find().lean()) {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            this.data.set(`role-${role.id}`, role);
+            this.data.set(`role-${role.id}`, role, 0);
         }
     }
 
     private async _loadAllAreas(): Promise<void> {
         for await (const area of this._db.areas.find().lean()) {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            this.data.set(`area-${area.id}`, area);
+            this.data.set(`area-${area.id}`, area, 0);
         }
     }
 
     private async _loadAllDevices(): Promise<void> {
         for await (const device of this._db.devices.find().lean()) {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            this.data.set(`device-${device.id}`, device);
+            this.data.set(`device-${device.id}`, device, 0);
+        }
+    }
+
+    private async _loadAllSecurityReasons(): Promise<void> {
+        for await (const reason of this._db.securityReasons.find().lean()) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            this.data.set(`security-reason-${reason.id}`, reason, 0);
         }
     }
 
@@ -166,7 +197,8 @@ class Cache {
         "schedules" |
         "areas" |
         "passLogs" |
-        "securityIncidents"
+        "securityIncidents" |
+        "securityReasons"
     ): Promise<number> {
         const aggregation: PipelineStage[] = [
             {

@@ -27,7 +27,10 @@ const ERRORS = {
     23: "It is necessary to disable the device, and remove the areas",
     24: "The device is disabled",
     25: "Access denied",
-    26: "The input area cannot be the output area"
+    26: "The input area cannot be the output area",
+    27: "SecurityReason not found",
+    28: "SecurityReason already exist",
+    29: "All logs with this security reason must be deleted",
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;
