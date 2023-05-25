@@ -16,6 +16,7 @@ class Cache {
     public lastScheduleId = 0;
     public lastAreaId = 0;
     public lastPassLogId = 0;
+    public lastSecurityIncidentId = 0;
 
     constructor(db: DB) {
         this._db = db;
@@ -104,14 +105,16 @@ class Cache {
             lastGroupId,
             lastScheduleId,
             lastAreaId,
-            lastPassLogId
+            lastPassLogId,
+            lastSecurityIncidentId
         ]= await Promise.all([
-            this._getMaxRoleId(),
-            this._getMaxUserId(),
-            this._getMaxGroupId(),
-            this._getMaxScheduleId(),
-            this._getMaxAreaId(),
-            this._getMaxPassLogId(),
+            this._getMaxId("roles"),
+            this._getMaxId("users"),
+            this._getMaxId("groups"),
+            this._getMaxId("schedules"),
+            this._getMaxId("areas"),
+            this._getMaxId("passLogs"),
+            this._getMaxId("securityIncidents"),
             this._loadAllRoles(),
             this._loadAllAreas(),
             this._loadAllDevices()
@@ -123,6 +126,7 @@ class Cache {
         this.lastScheduleId = lastScheduleId;
         this.lastAreaId = lastAreaId;
         this.lastPassLogId = lastPassLogId;
+        this.lastSecurityIncidentId = lastSecurityIncidentId;
     }
 
     private async _loadAllRoles(): Promise<void> {
@@ -146,7 +150,16 @@ class Cache {
         }
     }
 
-    private async _getMaxRoleId(): Promise<number> {
+    public async _getMaxId(
+        collection:
+        "roles" |
+        "users" |
+        "groups" |
+        "schedules" |
+        "areas" |
+        "passLogs" |
+        "securityIncidents"
+    ): Promise<number> {
         const aggregation: PipelineStage[] = [
             {
                 $group: {
@@ -161,127 +174,7 @@ class Cache {
             }
         ];
 
-        const res = await this._db.roles.aggregate<{_id: number}>(aggregation);
-
-        if (res.length === 0) {
-            return 0;
-        } else {
-            return res[0]._id;
-        }
-    }
-
-    private async _getMaxUserId(): Promise<number> {
-        const aggregation: PipelineStage[] = [
-            {
-                $group: {
-                    _id: "$id"
-                }
-            }, {
-                $sort: {
-                    _id: -1
-                }
-            }, {
-                $limit: 1
-            }
-        ];
-
-        const res = await this._db.users.aggregate<{_id: number}>(aggregation);
-
-        if (res.length === 0) {
-            return 0;
-        } else {
-            return res[0]._id;
-        }
-    }
-
-    private async _getMaxGroupId(): Promise<number> {
-        const aggregation: PipelineStage[] = [
-            {
-                $group: {
-                    _id: "$id"
-                }
-            }, {
-                $sort: {
-                    _id: -1
-                }
-            }, {
-                $limit: 1
-            }
-        ];
-
-        const res = await this._db.groups.aggregate<{_id: number}>(aggregation);
-
-        if (res.length === 0) {
-            return 0;
-        } else {
-            return res[0]._id;
-        }
-    }
-
-    private async _getMaxScheduleId(): Promise<number> {
-        const aggregation: PipelineStage[] = [
-            {
-                $group: {
-                    _id: "$id"
-                }
-            }, {
-                $sort: {
-                    _id: -1
-                }
-            }, {
-                $limit: 1
-            }
-        ];
-
-        const res = await this._db.schedules.aggregate<{_id: number}>(aggregation);
-
-        if (res.length === 0) {
-            return 0;
-        } else {
-            return res[0]._id;
-        }
-    }
-
-    private async _getMaxAreaId(): Promise<number> {
-        const aggregation: PipelineStage[] = [
-            {
-                $group: {
-                    _id: "$id"
-                }
-            }, {
-                $sort: {
-                    _id: -1
-                }
-            }, {
-                $limit: 1
-            }
-        ];
-
-        const res = await this._db.areas.aggregate<{_id: number}>(aggregation);
-
-        if (res.length === 0) {
-            return 0;
-        } else {
-            return res[0]._id;
-        }
-    }
-
-    private async _getMaxPassLogId(): Promise<number> {
-        const aggregation: PipelineStage[] = [
-            {
-                $group: {
-                    _id: "$id"
-                }
-            }, {
-                $sort: {
-                    _id: -1
-                }
-            }, {
-                $limit: 1
-            }
-        ];
-
-        const res = await this._db.passLogs.aggregate<{_id: number}>(aggregation);
+        const res = await this._db[collection].aggregate<{_id: number}>(aggregation);
 
         if (res.length === 0) {
             return 0;
