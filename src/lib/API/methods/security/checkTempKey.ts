@@ -1,6 +1,8 @@
 import { Type } from "@sinclair/typebox";
+
 import server from "../..";
 import DB from "../../../DB";
+import APIError from "../../Error";
 
 server.post("/security.checkTempKey", {
     schema: {
@@ -10,6 +12,12 @@ server.post("/security.checkTempKey", {
         })
     }
 }, (request) => {
+    if (!request.userHasAccess("security")) {
+        throw new APIError({
+            code: 8, request
+        });
+    }
+
     const userKey = DB.cache.getUserTempKey(request.body.userId);
 
     return {
