@@ -42,7 +42,8 @@ sectionManager.add(new Section({
     name: "users",
     auth: "jwt",
     methods: [
-        "get"
+        "get",
+        "getList"
     ]
 }));
 

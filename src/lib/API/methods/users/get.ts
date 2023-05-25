@@ -16,7 +16,7 @@ server.post("/users.get", {
     let role = request.userRole;
 
     if ("userId" in request.body) {
-        if (!request.userHasAccess("users.get")) {
+        if (!request.userHasAccess("users:get")) {
             throw new APIError({
                 code: 8, request
             });
