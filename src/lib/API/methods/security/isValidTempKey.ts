@@ -4,7 +4,7 @@ import server from "../..";
 import DB from "../../../DB";
 import APIError from "../../Error";
 
-server.post("/security.checkTempKey", {
+server.post("/security.isValidTempKey", {
     schema: {
         body: Type.Object({
             userId: Type.Number(),
@@ -20,7 +20,5 @@ server.post("/security.checkTempKey", {
 
     const userKey = DB.cache.getUserTempKey(request.body.userId);
 
-    return {
-        isValid: !!(userKey && userKey === request.body.key)
-    };
+    return !!(userKey && userKey === request.body.key);
 });

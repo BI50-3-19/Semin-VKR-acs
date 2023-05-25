@@ -109,7 +109,7 @@ sectionManager.add(new Section({
     auth: "jwt",
     methods: [
         "getTempKey",
-        "checkTempKey"
+        "isValidTempKey"
     ]
 }));
 
