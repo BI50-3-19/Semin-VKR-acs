@@ -14,6 +14,8 @@ interface IConfig {
     server: {
         port: number;
         jwtSecret: FastifyJWTOptions["secret"];
+        accessTokenTTL: number;
+        refreshTokenTTL: number;
         otpSecret: string;
         key: string;
         cert: string;

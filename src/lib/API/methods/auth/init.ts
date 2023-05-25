@@ -2,11 +2,12 @@ import server from "../..";
 import DB from "../../../DB";
 import APIError from "../../Error";
 
-import CryptoJS, { PBKDF2 } from "crypto-js";
+import CryptoJS, { MD5, PBKDF2 } from "crypto-js";
 import { Type } from "@sinclair/typebox";
 import { authenticator } from "otplib";
+import utils from "../../../utils";
 
-server.post("/session.create" ,{
+server.post("/auth.init", {
     schema: {
         body: Type.Object({
             login: Type.String(),
@@ -24,7 +25,7 @@ server.post("/session.create" ,{
         "auth.password": password
     }).lean();
 
-    if (user === null) {
+    if (user === null || !user.auth?.password) {
         throw new APIError({
             code: 4, request
         });
@@ -47,8 +48,12 @@ server.post("/session.create" ,{
     }
 
     return {
-        token: server.jwt.sign({
-            id: user.id
-        })
+        userId: user.id,
+        accessToken: server.jwt.sign({
+            id: user.id,
+            hash: MD5(user.auth.password).toString(CryptoJS.enc.Base64),
+            createdAt: Date.now()
+        }),
+        refreshToken: (await utils.createRefreshToken(user.id)).token
     };
 });

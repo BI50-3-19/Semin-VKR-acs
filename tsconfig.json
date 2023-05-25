@@ -12,6 +12,6 @@
         "declaration": true
     },
     "files": ["./src/@types/fastify.d.ts", "./src/@types/fastify-jwt.d.ts"],
-    "include": ["./src"],
+    "include": ["./src", "src/lib/API/methods/auth/init.ts"],
     "exclude": ["node_modules"]
 }

@@ -8,12 +8,12 @@ import multiPart from "@fastify/multipart";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import jwt from "@fastify/jwt";
+import CryptoJS, { MD5 } from "crypto-js";
 
 import DB from "../DB";
 import APIError from "./Error";
 import sectionManager from "./SectionManager";
 
-import { TUserBox } from "../DB/schemes/user";
 import utils from "../utils";
 import ACS from "../ACS";
 import { SecurityIncidents } from "../DB/schemes/securityIncident";
@@ -129,6 +129,25 @@ server.addHook<{
             });
         }
         request.userData = user;
+
+        if (request.user.createdAt + (DB.config.server.accessTokenTTL * 1000) < Date.now()) {
+            throw new APIError({
+                code: 30, request
+            });
+        }
+
+        if (!user.auth) {
+            throw new APIError({
+                code: 4, request
+            });
+        }
+        const hash = MD5(user.auth.password).toString(CryptoJS.enc.Base64);
+
+        if (hash !== request.user.hash) {
+            throw new APIError({
+                code: 4, request
+            });
+        }
 
         const role = await DB.cache.getRole(request.userData.roleId);
         if (role === null) {

@@ -12,6 +12,7 @@ import tempPassSchema, { TTempPassBox } from "./schemes/temporaryPasses";
 import passLogSchema, { TPassFullLogBox } from "./schemes/passLog";
 import securityReasonSchema, { TSecurityReasonBox } from "./schemes/reason";
 import securityIncidentSchema, { TFullSecurityIncidentBox } from "./schemes/securityIncident";
+import refreshTokenSchema, { TRefreshTokenBox } from "./schemes/refreshTokens";
 
 import Cache from "./Cache";
 import Storage from "./Storage";
@@ -30,6 +31,7 @@ class DB {
     public readonly passLogs: mongoose.Model<TPassFullLogBox>;
     public readonly securityIncidents: mongoose.Model<TFullSecurityIncidentBox>;
     public readonly securityReasons: mongoose.Model<TSecurityReasonBox>;
+    public readonly refreshTokens: mongoose.Model<TRefreshTokenBox>;
 
     public readonly files: Storage;
 
@@ -59,6 +61,7 @@ class DB {
         this.passLogs = createModel("pass-logs", passLogSchema);
         this.securityIncidents = createModel("security-incidents", securityIncidentSchema);
         this.securityReasons = createModel("security-reasons", securityReasonSchema);
+        this.refreshTokens = createModel("refresh-tokens", refreshTokenSchema);
 
         this.cache = new Cache(this);
         this.files = new Storage(this);

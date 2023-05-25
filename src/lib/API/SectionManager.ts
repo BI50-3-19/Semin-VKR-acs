@@ -31,10 +31,18 @@ sectionManager.add(new Section({
 }));
 
 sectionManager.add(new Section({
-    name: "session",
+    name: "auth",
     auth: "none",
     methods: [
-        "create"
+        "init"
+    ]
+}));
+
+sectionManager.add(new Section({
+    name: "session",
+    auth: "jwt",
+    methods: [
+        "getRefreshToken"
     ]
 }));
 

@@ -31,6 +31,7 @@ const ERRORS = {
     27: "SecurityReason not found",
     28: "SecurityReason already exist",
     29: "All logs with this security reason must be deleted",
+    30: "Token expired"
 } as const;
 
 type TAPIErrorCode = keyof typeof ERRORS;
