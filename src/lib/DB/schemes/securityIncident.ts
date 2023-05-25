@@ -27,20 +27,64 @@ const securityIncidentCreator = Type.Union([
 
 type TSecurityIncidentCreatorBox = Static<typeof securityIncidentCreator>;
 
-const securityIncidentBox = Type.Object({
-    id: Type.Number(),
-    type: Type.Union(SECURITY_INCIDENTS_TYPES.map(x => Type.Literal(x))),
-    userId: Type.Number(),
-    deviceId: Type.Optional(Type.Number()),
-    passLogId: Type.Optional(Type.Number()),
-    message: Type.Optional(Type.String()),
-    creator: securityIncidentCreator,
-    createdAt: Type.Date()
-});
+const securityIncidentBox = Type.Intersect([
+    Type.Object({
+        type: Type.Union(SECURITY_INCIDENTS_TYPES.map(x => Type.Literal(x))),
+        userId: Type.Number(),
+        creator: securityIncidentCreator,
+        message: Type.Optional(Type.String())
+    }),
+    Type.Union([
+        Type.Object({
+            type: Type.Literal("device-is-disabled"),
+            creator: securityIncidentCreatorAcs,
+            deviceId: Type.Number()
+        }),
+        Type.Object({
+            type: Type.Literal("area-not-found"),
+            creator: securityIncidentCreatorAcs,
+            deviceId: Type.Number(),
+            areaId: Type.Number()
+        }),
+        Type.Object({
+            type: Type.Literal("area-is-locked"),
+            areaId: Type.Number()
+        }),
+        Type.Union([
+            Type.Object({
+                type: Type.Literal("unauthorized-user"),
+                creator: securityIncidentCreatorAcs,
+                deviceId: Type.Number(),
+                areaId: Type.Number()
+            }),
+            Type.Object({
+                type: Type.Literal("unauthorized-user"),
+                creator: securityIncidentCreatorUser,
+                areaId: Type.Number()
+            }),
+        ]),
+        Type.Object({
+            type: Type.Literal("new-entrance-without-exit"),
+            prevAreaId: Type.Number(),
+            areaId: Type.Number(),
+            prevPassLogId: Type.Number(),
+            passLogId: Type.Number()
+        })
+    ])
+]);
+
+const fullSecurityIncidentBox = Type.Intersect([
+    Type.Object({
+        id: Type.Number(),
+        createdAt: Type.Date()
+    }),
+    securityIncidentBox
+]);
 
 type TSecurityIncidentBox = Static<typeof securityIncidentBox>;
+type TFullSecurityIncidentBox = Static<typeof fullSecurityIncidentBox>;
 
-const securityIncidentSchema = new Schema<TSecurityIncidentBox>({
+const securityIncidentSchema = new Schema<TFullSecurityIncidentBox>({
     id: {
         type: Schema.Types.Number,
         required: true,
@@ -59,6 +103,18 @@ const securityIncidentSchema = new Schema<TSecurityIncidentBox>({
         required: false
     },
     passLogId: {
+        type: Schema.Types.Number,
+        required: false
+    },
+    prevPassLogId: {
+        type: Schema.Types.Number,
+        required: false
+    },
+    areaId: {
+        type: Schema.Types.Number,
+        required: false
+    },
+    prevAreaId: {
         type: Schema.Types.Number,
         required: false
     },
@@ -90,7 +146,11 @@ const securityIncidentSchema = new Schema<TSecurityIncidentBox>({
     versionKey: false
 });
 
-export type { TSecurityIncidentBox };
+export type {
+    TSecurityIncidentBox,
+    TFullSecurityIncidentBox,
+    TSecurityIncidentCreatorBox
+};
 
 export { securityIncidentBox, SECURITY_INCIDENTS_TYPES };
 
