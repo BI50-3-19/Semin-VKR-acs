@@ -82,18 +82,6 @@ server.post("/security.denyAccessToArea", {
         area
     });
 
-    if (area.isLocked === false && isAllow) {
-        void ACS.addSecurityIncident({
-            type: SecurityIncidents.EnterWithoutAccess,
-            userId,
-            areaId,
-            creator: {
-                type: "user",
-                userId: securityId
-            }
-        });
-    }
-
     const log = await ACS.addPassLog({
         user,
         log: {
@@ -108,6 +96,18 @@ server.post("/security.denyAccessToArea", {
             }
         }
     });
+
+    if (area.isLocked === false && isAllow) {
+        void ACS.addSecurityIncident({
+            type: SecurityIncidents.EnterWithoutAccess,
+            userId,
+            areaId,
+            creator: {
+                type: "user",
+                userId: securityId
+            }
+        });
+    }
 
     if (comment === undefined && reasonId === undefined) {
         void ACS.addSecurityIncident({
