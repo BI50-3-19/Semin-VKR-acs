@@ -26,6 +26,14 @@ class Cache {
         });
     }
 
+    public getUserTempKey(id: number): string | undefined {
+        return this.data.get<string>(`user-temp-key-${id}`);
+    }
+
+    public setUserTempKey(id: number, key: string): void {
+        this.data.set(`user-temp-key-${id}`, key, 60);
+    }
+
     public async getUser(id: number, force = false): Promise<TUserBox | null> {
         let user = this.data.get<TRoleBox | null>(`user-${id}`);
 
