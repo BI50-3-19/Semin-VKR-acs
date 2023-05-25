@@ -2,17 +2,19 @@ import { Schema } from "mongoose";
 
 import { Static, Type } from "@sinclair/typebox";
 
-const SECURITY_INCIDENTS_TYPES = [
-    "device-is-disabled",
-    "user-not-found",
-    "area-not-found",
-    "area-is-locked",
-    "unauthorized-user",
-    "new-entrance-without-exit"
-] as const;
+enum SecurityIncidents {
+    OutsideUserSchedule = "outside-user-schedule",
+    DisabledDevice = "device-is-disabled",
+    UserNotFound = "user-not-found",
+    UserNotAuthorized = "unauthorized-user",
+    AreaNotFound = "area-not-found",
+    AreaIsLocked = "area-is-locked",
+    EnterWithoutExit = "new-enter-without-exit"
+}
 
 const securityIncidentCreatorAcs = Type.Object({
-    type: Type.Literal("acs")
+    type: Type.Literal("acs"),
+    deviceId: Type.Number()
 });
 
 const securityIncidentCreatorUser = Type.Object({
@@ -29,44 +31,45 @@ type TSecurityIncidentCreatorBox = Static<typeof securityIncidentCreator>;
 
 const securityIncidentBox = Type.Intersect([
     Type.Object({
-        type: Type.Union(SECURITY_INCIDENTS_TYPES.map(x => Type.Literal(x))),
         userId: Type.Number(),
         creator: securityIncidentCreator,
         message: Type.Optional(Type.String())
     }),
     Type.Union([
         Type.Object({
-            type: Type.Literal("device-is-disabled"),
+            type: Type.Literal(SecurityIncidents.DisabledDevice),
             creator: securityIncidentCreatorAcs,
-            deviceId: Type.Number()
         }),
         Type.Object({
-            type: Type.Literal("area-not-found"),
-            creator: securityIncidentCreatorAcs,
-            deviceId: Type.Number(),
-            areaId: Type.Number()
-        }),
-        Type.Object({
-            type: Type.Literal("area-is-locked"),
+            type: Type.Literal(SecurityIncidents.OutsideUserSchedule),
             areaId: Type.Number()
         }),
         Type.Union([
             Type.Object({
-                type: Type.Literal("unauthorized-user"),
-                creator: securityIncidentCreatorAcs,
-                deviceId: Type.Number(),
-                areaId: Type.Number()
+                type: Type.Literal(SecurityIncidents.UserNotFound),
+                creator: securityIncidentCreatorAcs
             }),
             Type.Object({
-                type: Type.Literal("unauthorized-user"),
+                type: Type.Literal(SecurityIncidents.UserNotFound),
                 creator: securityIncidentCreatorUser,
-                areaId: Type.Number()
+                message: Type.String()
             }),
         ]),
         Type.Object({
-            type: Type.Literal("new-entrance-without-exit"),
-            prevAreaId: Type.Number(),
-            areaId: Type.Number(),
+            type: Type.Literal(SecurityIncidents.AreaNotFound),
+            creator: securityIncidentCreatorAcs,
+            areaId: Type.Number()
+        }),
+        Type.Object({
+            type: Type.Literal(SecurityIncidents.AreaIsLocked),
+            areaId: Type.Number()
+        }),
+        Type.Object({
+            type: Type.Literal(SecurityIncidents.UserNotAuthorized),
+            areaId: Type.Number()
+        }),
+        Type.Object({
+            type: Type.Literal(SecurityIncidents.EnterWithoutExit),
             prevPassLogId: Type.Number(),
             passLogId: Type.Number()
         })
@@ -98,10 +101,6 @@ const securityIncidentSchema = new Schema<TFullSecurityIncidentBox>({
         type: Schema.Types.Number,
         required: true
     },
-    deviceId: {
-        type: Schema.Types.Number,
-        required: false
-    },
     passLogId: {
         type: Schema.Types.Number,
         required: false
@@ -114,10 +113,6 @@ const securityIncidentSchema = new Schema<TFullSecurityIncidentBox>({
         type: Schema.Types.Number,
         required: false
     },
-    prevAreaId: {
-        type: Schema.Types.Number,
-        required: false
-    },
     message: {
         type: Schema.Types.String,
         required: false
@@ -127,6 +122,10 @@ const securityIncidentSchema = new Schema<TFullSecurityIncidentBox>({
             type: {
                 type: Schema.Types.String,
                 required: true
+            },
+            deviceId: {
+                type: Schema.Types.Number,
+                required: false
             },
             userId: {
                 type: Schema.Types.Number,
@@ -152,6 +151,6 @@ export type {
     TSecurityIncidentCreatorBox
 };
 
-export { securityIncidentBox, SECURITY_INCIDENTS_TYPES };
+export { securityIncidentBox, SecurityIncidents };
 
 export default securityIncidentSchema;
