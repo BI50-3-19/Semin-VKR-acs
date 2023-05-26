@@ -37,7 +37,7 @@ class Cache {
                 accessToken: token
             }).lean();
 
-            if (tokenInfo === null) {
+            if (tokenInfo === null || tokenInfo === undefined) {
                 this.data.del(`jwt-token-${token}`);
                 return null;
             }
@@ -57,7 +57,7 @@ class Cache {
                 id
             }).lean();
 
-            if (user === null) {
+            if (user === null || user === undefined) {
                 this.data.del(`user-${id}`);
                 return null;
             }
@@ -76,7 +76,7 @@ class Cache {
                 id
             }).lean();
 
-            if (role === null) {
+            if (role === null || role === undefined) {
                 this.data.del(`role-${id}`);
                 return null;
             }
@@ -95,7 +95,7 @@ class Cache {
                 id
             }).lean();
 
-            if (reason === null) {
+            if (reason === null || reason === undefined) {
                 this.data.del(`security-reason-${id}`);
                 return null;
             }
@@ -114,7 +114,7 @@ class Cache {
                 id
             }).lean();
 
-            if (area === null) {
+            if (area === null || area === undefined) {
                 this.data.del(`area-${id}`);
                 return null;
             }
@@ -133,7 +133,7 @@ class Cache {
                 id
             }).lean();
 
-            if (device === null) {
+            if (device === null || device === undefined) {
                 this.data.del(`device-${id}`);
                 return null;
             }
