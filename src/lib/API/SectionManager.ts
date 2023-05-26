@@ -34,7 +34,8 @@ sectionManager.add(new Section({
     name: "auth",
     auth: "none",
     methods: [
-        "init"
+        "init",
+        "byTempKey"
     ]
 }));
 
@@ -42,7 +43,8 @@ sectionManager.add(new Section({
     name: "session",
     auth: "jwt",
     methods: [
-        "getNewTokens"
+        "getNewTokens",
+        "getTempKey"
     ]
 }));
 
