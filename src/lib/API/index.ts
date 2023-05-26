@@ -122,6 +122,14 @@ server.addHook<{
             });
         }
         request.session = tokenInfo;
+        request.session.lastUsedAt = new Date();
+        void DB.sessions.updateOne({
+            refreshToken: request.session.refreshToken
+        }, {
+            $set: {
+                lastUsedAt: new Date()
+            }
+        });
 
         const user = await DB.cache.getUser(request.user.id);
         if (user === null) {

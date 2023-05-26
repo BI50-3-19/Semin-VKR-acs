@@ -10,9 +10,13 @@ server.post("/sessions.destroy", {
         })
     }
 }, async (request) => {
-    const result = await DB.sessions.deleteOne({
+    const result = await DB.sessions.findOneAndDelete({
         _id: request.body.id
     }).lean();
 
-    return result.deletedCount === 1;
+    if (result) {
+        DB.cache.data.del(`jwt-token-${result.accessToken}`);
+    }
+
+    return result !== null;
 });
