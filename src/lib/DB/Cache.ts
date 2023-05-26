@@ -32,7 +32,7 @@ class Cache {
     public async getTokenInfo(token: string, force = false): Promise<TSessionBox | null> {
         let tokenInfo = this.data.get<TSessionBox | null>(`jwt-token-${token}`);
 
-        if (token === undefined || force) {
+        if (tokenInfo === undefined || force) {
             tokenInfo = await this._db.sessions.findOne({
                 accessToken: token
             }).lean();
