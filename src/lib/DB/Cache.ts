@@ -30,7 +30,7 @@ class Cache {
     }
 
     public async getTokenInfo(token: string, force = false): Promise<TSessionBox | null> {
-        let tokenInfo = this.data.get<TRoleBox | null>(`jwt-token-${token}`);
+        let tokenInfo = this.data.get<TSessionBox | null>(`jwt-token-${token}`);
 
         if (token === undefined || force) {
             tokenInfo = await this._db.sessions.findOne({
@@ -42,15 +42,15 @@ class Cache {
                 return null;
             }
 
-            this.data.set(`jwt-token--${token}`, tokenInfo, 60);
+            this.data.set(`jwt-token-${token}`, tokenInfo, 60);
         }
-        this.data.ttl(`jwt-token--${token}`, 60);
+        this.data.ttl(`jwt-token-${token}`, 60);
 
-        return token as unknown as TSessionBox;
+        return tokenInfo as unknown as TSessionBox;
     }
 
     public async getUser(id: number, force = false): Promise<TUserBox | null> {
-        let user = this.data.get<TRoleBox | null>(`user-${id}`);
+        let user = this.data.get<TUserBox | null>(`user-${id}`);
 
         if (user === undefined || force) {
             user = await this._db.users.findOne({
