@@ -19,9 +19,9 @@ import ACS from "../ACS";
 import { SecurityIncidents } from "../DB/schemes/securityIncident";
 
 const server = Fastify({
-    https: (DB.config.server.cert !== "" && DB.config.server.key !== "") ? {
-        key: fs.readFileSync(DB.config.server.key),
-        cert: fs.readFileSync(DB.config.server.cert),
+    https: (DB.config.server.web.cert !== "" && DB.config.server.web.key !== "") ? {
+        key: fs.readFileSync(DB.config.server.web.key),
+        cert: fs.readFileSync(DB.config.server.web.cert),
     } : null,
 }).withTypeProvider<TypeBoxTypeProvider>();
 server.setValidatorCompiler(TypeBoxValidatorCompiler);

@@ -29,14 +29,6 @@ class Cache {
         });
     }
 
-    public getUserTempKey(id: number): string | undefined {
-        return this.data.get<string>(`user-temp-key-${id}`);
-    }
-
-    public setUserTempKey(id: number, key: string): void {
-        this.data.set(`user-temp-key-${id}`, key, 60);
-    }
-
     public async getTokenInfo(token: string, force = false): Promise<TRefreshTokenBox | null> {
         let tokenInfo = this.data.get<TRoleBox | null>(`jwt-token-${token}`);
 

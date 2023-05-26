@@ -1,13 +1,24 @@
+import CryptoJS,{ AES,PBKDF2 } from "crypto-js";
 import server from "../..";
 import DB from "../../../DB";
-import crypto from "node:crypto";
 
 server.post("/security.getTempKey", (request) => {
-    const key = crypto.randomBytes(72).toString("hex");
+    const keyInfo = {
+        userId: request.user.id,
+        createdAt: Date.now()
+    };
 
-    DB.cache.setUserTempKey(request.user.id, key);
+    const encryptedKeyInfo = AES.encrypt(
+        JSON.stringify(keyInfo),
+        DB.config.server.tempKeySecret
+    ).toString();
+
+    const sign = PBKDF2(encryptedKeyInfo, DB.config.server.tempKeySecret, {
+        keySize: 16
+    }).toString(CryptoJS.enc.Base64);
 
     return {
-        key
+        key: encryptedKeyInfo,
+        sign
     };
 });

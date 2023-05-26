@@ -1,4 +1,5 @@
 import { Type } from "@sinclair/typebox";
+import CryptoJS,{ AES,PBKDF2 } from "crypto-js";
 
 import server from "../..";
 import DB from "../../../DB";
@@ -8,7 +9,8 @@ server.post("/security.isValidTempKey", {
     schema: {
         body: Type.Object({
             userId: Type.Number(),
-            key: Type.String()
+            key: Type.String(),
+            sign: Type.String()
         })
     }
 }, (request) => {
@@ -18,7 +20,33 @@ server.post("/security.isValidTempKey", {
         });
     }
 
-    const userKey = DB.cache.getUserTempKey(request.body.userId);
+    const { userId, key, sign } = request.body;
 
-    return !!(userKey && userKey === request.body.key);
+    const keySign = PBKDF2(key, DB.config.server.tempKeySecret, {
+        keySize: 16
+    }).toString(CryptoJS.enc.Base64);
+
+    if (keySign !== sign) {
+        return false;
+    }
+
+    const decryptedKey = AES.decrypt(
+        key,
+        DB.config.server.tempKeySecret
+    ).toString(CryptoJS.enc.Utf8);
+
+    const tempKeyInfo = JSON.parse(decryptedKey) as {
+        userId: number;
+        createdAt: number;
+    };
+
+    if (userId !== tempKeyInfo.userId) {
+        return false;
+    }
+
+    if (Date.now() > tempKeyInfo.createdAt + 30_000) {
+        return false;
+    }
+
+    return true;
 });

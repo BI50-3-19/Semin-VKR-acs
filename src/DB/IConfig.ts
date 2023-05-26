@@ -13,12 +13,16 @@ interface IConfig {
     };
     server: {
         port: number;
+        tempKeySecret: string;
+        tempKeySignSecret: string;
         jwtSecret: FastifyJWTOptions["secret"];
+        otpSecret: string;
         accessTokenTTL: number;
         refreshTokenTTL: number;
-        otpSecret: string;
-        key: string;
-        cert: string;
+        web: {
+            key: string;
+            cert: string;
+        };
     };
 }
 
