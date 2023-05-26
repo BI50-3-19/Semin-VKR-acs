@@ -44,7 +44,7 @@ server.post("/security.isValidTempKey", {
         return false;
     }
 
-    if (Date.now() > tempKeyInfo.createdAt + 30_000) {
+    if (Date.now() > tempKeyInfo.createdAt + DB.config.server.tempKeyTTL * 1000) {
         return false;
     }
 

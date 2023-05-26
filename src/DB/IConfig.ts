@@ -15,6 +15,7 @@ interface IConfig {
         port: number;
         tempKeySecret: string;
         tempKeySignSecret: string;
+        tempKeyTTL: number;
         jwtSecret: FastifyJWTOptions["secret"];
         otpSecret: string;
         accessTokenTTL: number;

@@ -19,6 +19,7 @@ server.post("/security.getTempKey", (request) => {
 
     return {
         key: encryptedKeyInfo,
-        sign
+        sign,
+        expireIn: DB.config.server.tempKeyTTL * 1000
     };
 });
