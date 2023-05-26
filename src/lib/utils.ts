@@ -10,7 +10,7 @@ class Utils {
         return Boolean(DB.config.accessRights[right] & mask);
     }
 
-    public async createRefreshToken(userId: number): Promise<TRefreshTokenBox> {
+    public async createRefreshToken(userId: number, accessToken: string): Promise<TRefreshTokenBox> {
         let token: string | null = null;
 
         while (token === null) {
@@ -26,6 +26,7 @@ class Utils {
         const refreshToken: TRefreshTokenBox = {
             userId,
             token,
+            accessToken,
             createdAt: new Date()
         };
 

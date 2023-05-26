@@ -13,9 +13,12 @@ server.post("/session.getRefreshToken", {
         })
     }
 }, async (request) => {
+    const currentAccessToken = request.headers["authorization"]?.split(" ")[1] as string;
+
     const [refreshToken, user] = await Promise.all([
         DB.refreshTokens.findOneAndDelete({
             token: request.body.refreshToken,
+            accessToken: currentAccessToken,
             userId: request.user.id
         }).lean(),
         DB.users.findOne({
@@ -34,13 +37,15 @@ server.post("/session.getRefreshToken", {
         });
     }
 
+    const accessToken = server.jwt.sign({
+        id: refreshToken.userId,
+        hash: MD5(user.auth.password).toString(CryptoJS.enc.Base64),
+        createdAt: Date.now()
+    });
+
     return {
         userId: refreshToken.userId,
-        accessToken: server.jwt.sign({
-            id: refreshToken.userId,
-            hash: MD5(user.auth.password).toString(CryptoJS.enc.Base64),
-            createdAt: Date.now()
-        }),
-        refreshToken: (await utils.createRefreshToken(refreshToken.userId)).token
+        accessToken,
+        refreshToken: (await utils.createRefreshToken(refreshToken.userId, accessToken)).token
     };
 });

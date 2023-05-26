@@ -47,13 +47,15 @@ server.post("/auth.init", {
         }
     }
 
+    const accessToken = server.jwt.sign({
+        id: user.id,
+        hash: MD5(user.auth.password).toString(CryptoJS.enc.Base64),
+        createdAt: Date.now()
+    });
+
     return {
         userId: user.id,
-        accessToken: server.jwt.sign({
-            id: user.id,
-            hash: MD5(user.auth.password).toString(CryptoJS.enc.Base64),
-            createdAt: Date.now()
-        }),
-        refreshToken: (await utils.createRefreshToken(user.id)).token
+        accessToken,
+        refreshToken: (await utils.createRefreshToken(user.id, accessToken)).token
     };
 });

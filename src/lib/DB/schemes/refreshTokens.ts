@@ -4,6 +4,7 @@ import { Static, Type } from "@sinclair/typebox";
 
 const refreshTokenBox = Type.Object({
     token: Type.String(),
+    accessToken: Type.String(),
     userId: Type.Number(),
     createdAt: Type.Date()
 });
@@ -15,6 +16,10 @@ const refreshTokenSchema = new Schema<TRefreshTokenBox>({
         type: Schema.Types.String,
         required: true,
         unique: true
+    },
+    accessToken: {
+        type: Schema.Types.String,
+        required: true
     },
     userId: {
         type: Schema.Types.Number,
