@@ -42,7 +42,7 @@ sectionManager.add(new Section({
     name: "session",
     auth: "jwt",
     methods: [
-        "getRefreshToken"
+        "getNewTokens"
     ]
 }));
 

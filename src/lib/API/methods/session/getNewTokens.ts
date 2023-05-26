@@ -6,25 +6,17 @@ import utils from "../../../utils";
 import DB from "../../../DB";
 import CryptoJS, { MD5 } from "crypto-js";
 
-server.post("/session.getRefreshToken", {
+server.post("/session.getNewTokens", {
     schema: {
         body: Type.Object({
             refreshToken: Type.String()
         })
     }
 }, async (request) => {
-    const currentAccessToken = request.headers["authorization"]?.split(" ")[1] as string;
-
-    const [refreshToken, user] = await Promise.all([
-        DB.refreshTokens.findOneAndDelete({
-            token: request.body.refreshToken,
-            accessToken: currentAccessToken,
-            userId: request.user.id
-        }).lean(),
-        DB.users.findOne({
-            id: request.user.id
-        }).lean()
-    ]);
+    const [refreshToken, user] = [
+        request.refreshTokenInfo,
+        request.userData
+    ];
 
     if (
         refreshToken === null ||
@@ -38,14 +30,14 @@ server.post("/session.getRefreshToken", {
     }
 
     const accessToken = server.jwt.sign({
-        id: refreshToken.userId,
+        id: request.user.id,
         hash: MD5(user.auth.password).toString(CryptoJS.enc.Base64),
         createdAt: Date.now()
     });
 
     return {
-        userId: refreshToken.userId,
+        userId: request.user.id,
         accessToken,
-        refreshToken: (await utils.createRefreshToken(refreshToken.userId, accessToken)).token
+        refreshToken: (await utils.createRefreshToken(accessToken)).token
     };
 });

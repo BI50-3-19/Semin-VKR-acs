@@ -10,11 +10,11 @@ class Utils {
         return Boolean(DB.config.accessRights[right] & mask);
     }
 
-    public async createRefreshToken(userId: number, accessToken: string): Promise<TRefreshTokenBox> {
+    public async createRefreshToken(accessToken: string): Promise<TRefreshTokenBox> {
         let token: string | null = null;
 
         while (token === null) {
-            token = SHA512(`${userId}-${Date.now()}`).toString(CryptoJS.enc.Base64);
+            token = SHA512(Date.now().toString()).toString(CryptoJS.enc.Base64);
 
             if (await (DB.refreshTokens.exists({
                 token
@@ -24,7 +24,6 @@ class Utils {
         }
 
         const refreshToken: TRefreshTokenBox = {
-            userId,
             token,
             accessToken,
             createdAt: new Date()

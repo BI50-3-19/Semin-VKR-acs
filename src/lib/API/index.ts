@@ -114,6 +114,15 @@ server.addHook<{
             });
         }
 
+        request.jwtToken = request.headers["authorization"]?.split(" ")[1] as string;
+        const tokenInfo = await DB.cache.getTokenInfo(request.jwtToken);
+        if (tokenInfo === null) {
+            throw new APIError({
+                code: 4, request
+            });
+        }
+        request.refreshTokenInfo = tokenInfo;
+
         const user = await DB.cache.getUser(request.user.id);
         if (user === null) {
             void ACS.addSecurityIncident({

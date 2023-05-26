@@ -56,6 +56,6 @@ server.post("/auth.init", {
     return {
         userId: user.id,
         accessToken,
-        refreshToken: (await utils.createRefreshToken(user.id, accessToken)).token
+        refreshToken: (await utils.createRefreshToken(accessToken)).token
     };
 });

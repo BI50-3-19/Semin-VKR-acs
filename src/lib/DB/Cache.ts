@@ -6,6 +6,7 @@ import { PipelineStage } from "mongoose";
 import { TAreaBox } from "./schemes/area";
 import { TDeviceBox } from "./schemes/device";
 import { TSecurityReasonBox } from "./schemes/reason";
+import { TRefreshTokenBox } from "./schemes/refreshTokens";
 
 class Cache {
     private _db: DB;
@@ -36,6 +37,26 @@ class Cache {
         this.data.set(`user-temp-key-${id}`, key, 60);
     }
 
+    public async getTokenInfo(token: string, force = false): Promise<TRefreshTokenBox | null> {
+        let tokenInfo = this.data.get<TRoleBox | null>(`jwt-token-${token}`);
+
+        if (token === undefined || force) {
+            tokenInfo = await this._db.refreshTokens.findOne({
+                accessToken: token
+            }).lean();
+
+            if (tokenInfo === null) {
+                this.data.del(`jwt-token-${token}`);
+                return null;
+            }
+
+            this.data.set(`jwt-token--${token}`, tokenInfo, 60);
+        }
+        this.data.ttl(`jwt-token--${token}`, 60);
+
+        return token as unknown as TRefreshTokenBox;
+    }
+
     public async getUser(id: number, force = false): Promise<TUserBox | null> {
         let user = this.data.get<TRoleBox | null>(`user-${id}`);
 
@@ -45,6 +66,7 @@ class Cache {
             }).lean();
 
             if (user === null) {
+                this.data.del(`user-${id}`);
                 return null;
             }
 
@@ -63,10 +85,11 @@ class Cache {
             }).lean();
 
             if (role === null) {
+                this.data.del(`role-${id}`);
                 return null;
             }
 
-            this.data.set(`role-${id}`, role);
+            this.data.set(`role-${id}`, role, 0);
         }
 
         return role as TRoleBox;
@@ -81,6 +104,7 @@ class Cache {
             }).lean();
 
             if (reason === null) {
+                this.data.del(`security-reason-${id}`);
                 return null;
             }
 
@@ -99,10 +123,11 @@ class Cache {
             }).lean();
 
             if (area === null) {
+                this.data.del(`area-${id}`);
                 return null;
             }
 
-            this.data.set(`area-${id}`, area);
+            this.data.set(`area-${id}`, area, 0);
         }
 
         return area as TAreaBox;
@@ -117,10 +142,11 @@ class Cache {
             }).lean();
 
             if (device === null) {
+                this.data.del(`device-${id}`);
                 return null;
             }
 
-            this.data.set(`device-${id}`, device);
+            this.data.set(`device-${id}`, device, 0);
         }
 
         return device as TDeviceBox;
