@@ -6,7 +6,7 @@ import fastify, { FastifyRequest } from "fastify";
 import { TUserBox } from "../lib/DB/schemes/user";
 import { TRoleBox } from "../lib/DB/schemes/role";
 import { TDeviceBox } from "../lib/DB/schemes/device";
-import { TRefreshTokenBox } from "../lib/DB/schemes/refreshTokens";
+import { TSessionBox } from "../lib/DB/schemes/session";
 
 import { DB } from "../lib/DB";
 
@@ -17,6 +17,6 @@ declare module "fastify" {
         userRole: TRoleBox;
         userHasAccess: (right: keyof DB["config"]["accessRights"]) => boolean;
         jwtToken: string;
-        refreshTokenInfo: TRefreshTokenBox;
+        session: TSessionBox;
     }
 }

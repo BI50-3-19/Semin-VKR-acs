@@ -6,7 +6,7 @@ import { PipelineStage } from "mongoose";
 import { TAreaBox } from "./schemes/area";
 import { TDeviceBox } from "./schemes/device";
 import { TSecurityReasonBox } from "./schemes/reason";
-import { TRefreshTokenBox } from "./schemes/refreshTokens";
+import { TSessionBox } from "./schemes/session";
 
 class Cache {
     private _db: DB;
@@ -29,11 +29,11 @@ class Cache {
         });
     }
 
-    public async getTokenInfo(token: string, force = false): Promise<TRefreshTokenBox | null> {
+    public async getTokenInfo(token: string, force = false): Promise<TSessionBox | null> {
         let tokenInfo = this.data.get<TRoleBox | null>(`jwt-token-${token}`);
 
         if (token === undefined || force) {
-            tokenInfo = await this._db.refreshTokens.findOne({
+            tokenInfo = await this._db.sessions.findOne({
                 accessToken: token
             }).lean();
 
@@ -46,7 +46,7 @@ class Cache {
         }
         this.data.ttl(`jwt-token--${token}`, 60);
 
-        return token as unknown as TRefreshTokenBox;
+        return token as unknown as TSessionBox;
     }
 
     public async getUser(id: number, force = false): Promise<TUserBox | null> {

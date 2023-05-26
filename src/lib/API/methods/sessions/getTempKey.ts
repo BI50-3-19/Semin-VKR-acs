@@ -2,7 +2,7 @@ import CryptoJS,{ AES, PBKDF2 } from "crypto-js";
 import server from "../..";
 import DB from "../../../DB";
 
-server.post("/session.getTempKey", (request) => {
+server.post("/sessions.getTempKey", (request) => {
     const keyInfo = {
         userId: request.user.id,
         createdAt: Date.now()

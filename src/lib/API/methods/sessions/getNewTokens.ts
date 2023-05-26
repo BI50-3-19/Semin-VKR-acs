@@ -6,7 +6,7 @@ import utils from "../../../utils";
 import DB from "../../../DB";
 import CryptoJS, { MD5 } from "crypto-js";
 
-server.post("/session.getNewTokens", {
+server.post("/sessions.getNewTokens", {
     schema: {
         body: Type.Object({
             refreshToken: Type.String()
@@ -14,7 +14,7 @@ server.post("/session.getNewTokens", {
     }
 }, async (request) => {
     const [refreshToken, user] = [
-        request.refreshTokenInfo,
+        request.session,
         request.userData
     ];
 
@@ -38,6 +38,6 @@ server.post("/session.getNewTokens", {
     return {
         userId: request.user.id,
         accessToken,
-        refreshToken: (await utils.createRefreshToken(accessToken)).token
+        refreshToken: (await utils.updateSessionTokens(refreshToken.refreshToken, accessToken)).refreshToken
     };
 });

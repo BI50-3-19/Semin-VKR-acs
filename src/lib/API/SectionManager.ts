@@ -40,11 +40,12 @@ sectionManager.add(new Section({
 }));
 
 sectionManager.add(new Section({
-    name: "session",
+    name: "sessions",
     auth: "jwt",
     methods: [
         "getNewTokens",
-        "getTempKey"
+        "getTempKey",
+        "getActive"
     ]
 }));
 

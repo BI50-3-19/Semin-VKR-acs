@@ -121,7 +121,7 @@ server.addHook<{
                 code: 4, request
             });
         }
-        request.refreshTokenInfo = tokenInfo;
+        request.session = tokenInfo;
 
         const user = await DB.cache.getUser(request.user.id);
         if (user === null) {
