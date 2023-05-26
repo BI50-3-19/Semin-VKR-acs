@@ -26,6 +26,7 @@ server.post("/users.getList", {
         name: true,
         surname: true,
         patronymic: true,
+        hasAvatar: true,
         roleId: true
     }, {
         limit: count,
@@ -37,7 +38,9 @@ server.post("/users.getList", {
         name: string;
         surname: string;
         patronymic?: string;
+        hasAvatar: boolean;
         role: string;
+        mask: number;
     }[] = [];
 
     for (const user of users) {
@@ -54,7 +57,9 @@ server.post("/users.getList", {
             name: user.name,
             surname: user.surname,
             patronymic: user.patronymic,
-            role: role.name
+            hasAvatar: user.hasAvatar,
+            role: role.name,
+            mask: role.mask
         });
     }
 

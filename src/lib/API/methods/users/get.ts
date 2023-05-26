@@ -47,6 +47,8 @@ server.post("/users.get", {
         name: user.name,
         surname: user.surname,
         patronymic: user.patronymic,
-        role: role.name
+        hasAvatar: user.hasAvatar,
+        role: role.name,
+        mask: role.mask
     };
 });
