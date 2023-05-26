@@ -40,6 +40,14 @@ sectionManager.add(new Section({
 }));
 
 sectionManager.add(new Section({
+    name: "account",
+    auth: "jwt",
+    methods: [
+        "getStats"
+    ]
+}));
+
+sectionManager.add(new Section({
     name: "sessions",
     auth: "jwt",
     methods: [

@@ -5,6 +5,7 @@ import { Static, Type } from "@sinclair/typebox";
 const userAuthBox = Type.Object({
     login: Type.String(),
     password: Type.String(),
+    passwordUpdatedAt: Type.Date(),
     otp: Type.Optional(Type.String())
 });
 
@@ -18,6 +19,10 @@ const userAuthSchema = new Schema<TUserAuthBox>({
     },
     password: {
         type: Schema.Types.String,
+        required: true
+    },
+    passwordUpdatedAt: {
+        type: Schema.Types.Date,
         required: true
     },
     otp: {
