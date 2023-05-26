@@ -53,7 +53,9 @@ sectionManager.add(new Section({
     methods: [
         "getNewTokens",
         "getTempKey",
-        "getActive"
+        "getActive",
+        "reset",
+        "destroy"
     ]
 }));
 
