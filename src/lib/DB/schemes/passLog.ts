@@ -79,6 +79,42 @@ const passLogSchema = new Schema<TPassFullLogBox>({
         unique: true,
         required: true
     },
+    type: {
+        type: Schema.Types.String,
+        required: true
+    },
+    comment: {
+        type: Schema.Types.String,
+        required: false
+    },
+    creator: {
+        type: new Schema<TPassFullLogBox["creator"]>({
+            type: {
+                type: Schema.Types.String,
+                required: true
+            },
+            deviceId: {
+                type: Schema.Types.Number,
+                required: false
+            },
+            userId: {
+                type: Schema.Types.Number,
+                required: false
+            }
+        }, {
+            versionKey: false,
+            _id: false
+        }),
+        required: true
+    },
+    reason: {
+        type: Schema.Types.String,
+        required: false
+    },
+    reasonId: {
+        type: Schema.Types.Number,
+        required: false
+    },
     date: {
         type: Schema.Types.Date,
         required: true
