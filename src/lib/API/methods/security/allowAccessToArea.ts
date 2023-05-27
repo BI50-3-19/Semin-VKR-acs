@@ -87,19 +87,7 @@ server.post("/security.allowAccessToArea", {
         area
     });
 
-    if (area.isLocked || !isAllow) {
-        void ACS.addSecurityIncident({
-            type: SecurityIncidents.EnterWithoutAccess,
-            userId,
-            areaId,
-            creator: {
-                type: "user",
-                userId: securityId
-            }
-        });
-    }
-
-    void ACS.addPassLog({
+    const log =await ACS.addPassLog({
         user,
         log: {
             type: "successful",
@@ -111,6 +99,19 @@ server.post("/security.allowAccessToArea", {
             prevAreaId,
         }
     });
+
+    if (area.isLocked || !isAllow) {
+        void ACS.addSecurityIncident({
+            type: SecurityIncidents.EnterWithoutAccess,
+            userId,
+            areaId,
+            passLogId: log.id,
+            creator: {
+                type: "user",
+                userId: securityId
+            }
+        });
+    }
 
     return true;
 });

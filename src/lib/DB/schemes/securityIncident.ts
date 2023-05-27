@@ -47,7 +47,8 @@ const securityIncidentBox = Type.Intersect([
         }),
         Type.Object({
             type: Type.Literal(SecurityIncidents.EnterWithoutAccess),
-            areaId: Type.Number()
+            areaId: Type.Number(),
+            passLogId: Type.Number()
         }),
         Type.Object({
             type: Type.Literal(SecurityIncidents.SecurityDenyAccessWithoutReason),

@@ -123,19 +123,7 @@ server.post("/security.denyAccessToArea", {
         }
     });
 
-    if (area.isLocked === false && isAllow) {
-        void ACS.addSecurityIncident({
-            type: SecurityIncidents.EnterWithoutAccess,
-            userId,
-            areaId,
-            creator: {
-                type: "user",
-                userId: securityId
-            }
-        });
-    }
-
-    if (comment === undefined && reasonId === undefined) {
+    if (comment === undefined && reasonId === undefined && isAllow) {
         void ACS.addSecurityIncident({
             type: SecurityIncidents.SecurityDenyAccessWithoutReason,
             userId,
