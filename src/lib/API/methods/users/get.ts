@@ -1,7 +1,7 @@
 import server from "../..";
 import DB from "../../../DB";
-import APIError from "../../Error";
 import { TUserBox } from "../../../DB/schemes/user";
+import APIError from "../../Error";
 
 import { Type } from "@sinclair/typebox";
 

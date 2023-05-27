@@ -1,12 +1,12 @@
+import { PipelineStage } from "mongoose";
 import NodeCache from "node-cache";
 import { DB } from ".";
-import { TRoleBox } from "./schemes/role";
-import { TUserBox } from "./schemes/user";
-import { PipelineStage } from "mongoose";
 import { TAreaBox } from "./schemes/area";
 import { TDeviceBox } from "./schemes/device";
 import { TSecurityReasonBox } from "./schemes/reason";
+import { TRoleBox } from "./schemes/role";
 import { TSessionBox } from "./schemes/session";
+import { TUserBox } from "./schemes/user";
 
 class Cache {
     private _db: DB;

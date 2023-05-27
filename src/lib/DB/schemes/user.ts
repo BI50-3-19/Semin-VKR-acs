@@ -91,7 +91,7 @@ const userSchema = new Schema<TUserBox>({
 });
 
 export type { TUserBox };
-
 export { userBox };
+
 
 export default userSchema;

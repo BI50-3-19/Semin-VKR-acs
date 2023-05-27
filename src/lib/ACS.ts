@@ -1,15 +1,15 @@
 import DB from "./DB";
-import { TUserBox } from "./DB/schemes/user";
+import { TAreaBox } from "./DB/schemes/area";
 import {
     TPassFullLogBox,
     TPassLogBox
 } from "./DB/schemes/passLog";
-import { TAreaBox } from "./DB/schemes/area";
 import {
     SecurityIncidents,
     TFullSecurityIncidentBox,
     TSecurityIncidentBox
 } from "./DB/schemes/securityIncident";
+import { TUserBox } from "./DB/schemes/user";
 
 class ACS {
     public async hasAccess({

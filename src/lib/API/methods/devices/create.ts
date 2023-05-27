@@ -2,8 +2,8 @@ import server from "../..";
 import DB from "../../../DB";
 import APIError from "../../Error";
 
-import CryptoJS, { PBKDF2 } from "crypto-js";
 import { Type } from "@sinclair/typebox";
+import CryptoJS, { PBKDF2 } from "crypto-js";
 
 server.post("/devices.create", {
     schema: {

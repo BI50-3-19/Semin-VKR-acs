@@ -35,7 +35,7 @@ const groupSchema = new Schema<TGroupBox>({
 });
 
 export type { TGroupBox };
-
 export { groupBox };
+
 
 export default groupSchema;

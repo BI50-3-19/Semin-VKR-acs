@@ -136,7 +136,7 @@ const passLogSchema = new Schema<TPassFullLogBox>({
 });
 
 export type { TPassFullLogBox, TPassLogBox };
-
 export { PassLogUnsuccesfulReasons, passFullLogBox };
+
 
 export default passLogSchema;

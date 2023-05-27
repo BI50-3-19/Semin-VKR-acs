@@ -128,7 +128,7 @@ export type {
     TFullSecurityIncidentBox,
     TSecurityIncidentCreatorBox
 };
-
 export { securityIncidentBox, SecurityIncidents };
+
 
 export default securityIncidentSchema;

@@ -1,11 +1,11 @@
 import { Type } from "@sinclair/typebox";
 
 import server from "../..";
-import DB from "../../../DB";
-import APIError from "../../Error";
 import ACS from "../../../ACS";
-import { SecurityIncidents } from "../../../DB/schemes/securityIncident";
+import DB from "../../../DB";
 import { PassLogUnsuccesfulReasons } from "../../../DB/schemes/passLog";
+import { SecurityIncidents } from "../../../DB/schemes/securityIncident";
+import APIError from "../../Error";
 
 const DIRECTIONS = ["next", "prev"] as const;
 

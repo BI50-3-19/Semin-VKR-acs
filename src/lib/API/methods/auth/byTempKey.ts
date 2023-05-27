@@ -1,12 +1,12 @@
 import { Type } from "@sinclair/typebox";
-import CryptoJS,{
-    AES,MD5, PBKDF2
+import CryptoJS, {
+    AES, MD5, PBKDF2
 } from "crypto-js";
 
 import server from "../..";
 import DB from "../../../DB";
-import APIError from "../../Error";
 import utils from "../../../utils";
+import APIError from "../../Error";
 
 server.post("/auth.byTempKey", {
     schema: {

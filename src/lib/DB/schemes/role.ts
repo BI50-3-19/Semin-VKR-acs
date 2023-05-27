@@ -30,7 +30,7 @@ const roleSchema = new Schema<TRoleBox>({
 });
 
 export type { TRoleBox };
-
 export { roleBox };
+
 
 export default roleSchema;

@@ -1,4 +1,4 @@
-import CryptoJS,{ AES,PBKDF2 } from "crypto-js";
+import CryptoJS, { AES, PBKDF2 } from "crypto-js";
 import server from "../..";
 import DB from "../../../DB";
 

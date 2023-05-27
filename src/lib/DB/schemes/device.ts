@@ -58,7 +58,7 @@ const deviceSchema = new Schema<TDeviceBox>({
 });
 
 export type { TDeviceBox };
-
 export { deviceBox };
+
 
 export default deviceSchema;

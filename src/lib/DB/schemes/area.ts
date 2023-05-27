@@ -35,7 +35,7 @@ const areaSchema = new Schema<TAreaBox>({
 });
 
 export type { TAreaBox };
-
 export { areaBox };
+
 
 export default areaSchema;

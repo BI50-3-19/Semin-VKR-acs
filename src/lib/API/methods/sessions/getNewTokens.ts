@@ -2,9 +2,9 @@ import server from "../..";
 import APIError from "../../Error";
 
 import { Type } from "@sinclair/typebox";
-import utils from "../../../utils";
-import DB from "../../../DB";
 import CryptoJS, { MD5 } from "crypto-js";
+import DB from "../../../DB";
+import utils from "../../../utils";
 
 server.post("/sessions.getNewTokens", {
     schema: {

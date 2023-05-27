@@ -2,17 +2,17 @@ import mongoose from "mongoose";
 
 import config from "../../DB/config";
 
-import userSchema, { TUserBox } from "./schemes/user";
 import areaSchema, { TAreaBox } from "./schemes/area";
 import deviceSchema, { TDeviceBox } from "./schemes/device";
 import groupSchema, { TGroupBox } from "./schemes/group";
-import roleSchema, { TRoleBox } from "./schemes/role";
-import scheduleSchema, { TScheduleBox } from "./schemes/schedule";
-import tempPassSchema, { TTempPassBox } from "./schemes/temporaryPasses";
 import passLogSchema, { TPassFullLogBox } from "./schemes/passLog";
 import securityReasonSchema, { TSecurityReasonBox } from "./schemes/reason";
+import roleSchema, { TRoleBox } from "./schemes/role";
+import scheduleSchema, { TScheduleBox } from "./schemes/schedule";
 import securityIncidentSchema, { TFullSecurityIncidentBox } from "./schemes/securityIncident";
 import sessionSchema, { TSessionBox } from "./schemes/session";
+import tempPassSchema, { TTempPassBox } from "./schemes/temporaryPasses";
+import userSchema, { TUserBox } from "./schemes/user";
 
 import Cache from "./Cache";
 import Storage from "./Storage";

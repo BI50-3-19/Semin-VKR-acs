@@ -25,7 +25,7 @@ const securityReasonSchema = new Schema<TSecurityReasonBox>({
 });
 
 export type { TSecurityReasonBox };
-
 export { securityReasonBox };
+
 
 export default securityReasonSchema;

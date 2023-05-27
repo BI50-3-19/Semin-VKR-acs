@@ -39,7 +39,7 @@ const sessionSchema = new Schema<TSessionBox>({
 });
 
 export type { TSessionBox };
-
 export { sessionBox };
+
 
 export default sessionSchema;

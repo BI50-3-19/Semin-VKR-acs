@@ -86,7 +86,7 @@ const tempPassSchema = new Schema<TTempPassBox>({
 });
 
 export type { TTempPassBox };
-
 export { tempPassBox };
+
 
 export default tempPassSchema;
