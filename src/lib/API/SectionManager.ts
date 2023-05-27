@@ -64,7 +64,8 @@ sectionManager.add(new Section({
     auth: "jwt",
     methods: [
         "get",
-        "getList"
+        "getList",
+        "getAvatar"
     ]
 }));
 

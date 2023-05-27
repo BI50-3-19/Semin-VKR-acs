@@ -10,8 +10,8 @@ class StorageAvatars {
     private readonly _db: Storage;
     private readonly _storage: GridFSBucket;
 
-    private _getFilename(id: string): string {
-        return `avatar_${id}.jpg`;
+    private _getFilename(userId: number): string {
+        return `avatar_${userId}.jpg`;
     }
 
     constructor(storage: Storage) {
@@ -21,17 +21,17 @@ class StorageAvatars {
         });
     }
 
-    public async exists(id: string): Promise<boolean> {
+    public async exists(userId: number): Promise<boolean> {
         const files = await this._storage.find({
-            filename: this._getFilename(id),
+            filename: this._getFilename(userId),
         }).toArray();
 
         return files.length > 0;
     }
 
-    public async download(id: string): Promise<Buffer> {
+    public async download(userId: number): Promise<Buffer> {
         const downloadStream = this._storage.openDownloadStreamByName(
-            this._getFilename(id)
+            this._getFilename(userId)
         );
 
         return new Promise((resolve, reject) => {
@@ -49,14 +49,14 @@ class StorageAvatars {
         });
     }
 
-    public getDownloadStream(id: string): GridFSBucketReadStream {
+    public getDownloadStream(userId: number): GridFSBucketReadStream {
         return this._storage.openDownloadStreamByName(
-            this._getFilename(id)
+            this._getFilename(userId)
         );
     }
 
-    public async upload(id: string, file: Buffer): Promise<string> {
-        const uploadStream = this._storage.openUploadStream(this._getFilename(id));
+    public async upload(userId: number, file: Buffer): Promise<string> {
+        const uploadStream = this._storage.openUploadStream(this._getFilename(userId));
 
         return new Promise((resolve, reject) => {
             uploadStream.once("finish", resolve);

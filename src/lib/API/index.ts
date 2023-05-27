@@ -1,22 +1,22 @@
-import fs from "node:fs";
-import Fastify from "fastify";
 import { TypeBoxTypeProvider, TypeBoxValidatorCompiler } from "@fastify/type-provider-typebox";
+import Fastify from "fastify";
+import fs from "node:fs";
 
-import rateLimit from "@fastify/rate-limit";
-import formBody from "@fastify/formbody";
-import multiPart from "@fastify/multipart";
 import cors from "@fastify/cors";
+import formBody from "@fastify/formbody";
 import helmet from "@fastify/helmet";
 import jwt from "@fastify/jwt";
+import multiPart from "@fastify/multipart";
+import rateLimit from "@fastify/rate-limit";
 import CryptoJS, { MD5 } from "crypto-js";
 
 import DB from "../DB";
 import APIError from "./Error";
 import sectionManager from "./SectionManager";
 
-import utils from "../utils";
 import ACS from "../ACS";
 import { SecurityIncidents } from "../DB/schemes/securityIncident";
+import utils from "../utils";
 
 const server = Fastify({
     https: (DB.config.server.web.cert !== "" && DB.config.server.web.key !== "") ? {
@@ -99,7 +99,7 @@ server.addHook<{
 
     const sectionClass = sectionManager.getSection(section);
 
-    if (!sectionClass || !sectionClass.methods.includes(method)) {
+    if (!sectionClass || !sectionClass.methods.includes(method.split("?")[0])) {
         throw new APIError({
             code: 1, request
         });
