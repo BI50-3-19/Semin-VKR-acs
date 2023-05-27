@@ -27,7 +27,10 @@ server.post("/security.isValidTempKey", {
     }).toString(CryptoJS.enc.Base64);
 
     if (keySign !== sign) {
-        return false;
+        return {
+            status: false,
+            reason: "INVALID_SIGN"
+        };
     }
 
     const decryptedKey = AES.decrypt(
@@ -41,12 +44,20 @@ server.post("/security.isValidTempKey", {
     };
 
     if (userId !== tempKeyInfo.userId) {
-        return false;
+        return {
+            status: false,
+            reason: "INVALID_USER_ID"
+        };
     }
 
     if (Date.now() > tempKeyInfo.createdAt + DB.config.server.tempKeyTTL * 1000) {
-        return false;
+        return {
+            status: false,
+            reason: "EXPIRED"
+        };
     }
 
-    return true;
+    return {
+        status: true
+    };
 });
