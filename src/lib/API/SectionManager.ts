@@ -104,7 +104,8 @@ sectionManager.add(new Section({
     methods: [
         "create",
         "edit",
-        "delete"
+        "delete",
+        "getList"
     ]
 }));
 

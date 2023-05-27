@@ -12,7 +12,7 @@ server.post("/users.getList", {
         })
     }
 }, async (request) => {
-    if (!request.userHasAccess("users:get")) {
+    if (!request.userHasAccess("users:manage")) {
         throw new APIError({
             code: 8, request
         });
