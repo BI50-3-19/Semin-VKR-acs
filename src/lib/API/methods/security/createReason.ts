@@ -7,7 +7,7 @@ import { Type } from "@sinclair/typebox";
 server.post("/security.createReason", {
     schema: {
         body: Type.Object({
-            name: Type.String()
+            title: Type.String()
         })
     }
 }, async (request) => {
@@ -17,9 +17,9 @@ server.post("/security.createReason", {
         });
     }
 
-    const { name } = request.body;
+    const { title } = request.body;
 
-    if ((await DB.securityReasons.exists({ name }))) {
+    if ((await DB.securityReasons.exists({ title }))) {
         throw new APIError({
             code: 28, request
         });
@@ -30,7 +30,7 @@ server.post("/security.createReason", {
     await DB.securityReasons.insertMany([
         {
             id,
-            name
+            title
         }
     ]);
     await DB.cache.getSecurityReason(id, true);
