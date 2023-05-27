@@ -2,8 +2,8 @@ import server from "../..";
 import DB from "../../../DB";
 import APIError from "../../Error";
 
-import CryptoJS, { MD5, PBKDF2 } from "crypto-js";
 import { Type } from "@sinclair/typebox";
+import CryptoJS, { MD5, PBKDF2 } from "crypto-js";
 import { authenticator } from "otplib";
 import utils from "../../../utils";
 
