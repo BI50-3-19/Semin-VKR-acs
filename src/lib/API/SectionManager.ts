@@ -66,7 +66,8 @@ sectionManager.add(new Section({
         "get",
         "getList",
         "getAvatar",
-        "setAvatar"
+        "setAvatar",
+        "delete"
     ]
 }));
 
