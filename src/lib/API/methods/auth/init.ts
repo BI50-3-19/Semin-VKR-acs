@@ -22,7 +22,8 @@ server.post("/auth.init", {
 
     const user = await DB.users.findOne({
         "auth.login": request.body.login,
-        "auth.password": password
+        "auth.password": password,
+        isDeleted: false
     }).lean();
 
     if (user === null || !user.auth?.password) {

@@ -52,7 +52,8 @@ server.post("/auth.byTempKey", {
     }
 
     const user = await DB.users.findOne({
-        id: userId
+        id: userId,
+        isDeleted: false
     }).lean();
 
     if (user === null || !user.auth?.password) {

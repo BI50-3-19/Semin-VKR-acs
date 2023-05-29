@@ -43,7 +43,8 @@ const userBox = Type.Object({
     name: Type.String(),
     surname: Type.String(),
     patronymic: Type.Optional(Type.String()),
-    hasAvatar: Type.Boolean()
+    hasAvatar: Type.Boolean(),
+    isDeleted: Type.Boolean()
 });
 
 type TUserBox = Static<typeof userBox>
@@ -83,6 +84,10 @@ const userSchema = new Schema<TUserBox>({
         required: false
     },
     hasAvatar: {
+        type: Schema.Types.Boolean,
+        required: true
+    },
+    isDeleted: {
         type: Schema.Types.Boolean,
         required: true
     }

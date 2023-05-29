@@ -23,7 +23,8 @@ server.post("/users.get", {
         }
 
         user = await DB.users.findOne({
-            id: request.body.userId
+            id: request.body.userId,
+            isDeleted: false
         }).lean();
 
         if (user === null) {

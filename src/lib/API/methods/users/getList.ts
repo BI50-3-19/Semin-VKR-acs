@@ -20,7 +20,9 @@ server.post("/users.getList", {
 
     const { count, offset } = request.body;
 
-    const users = await DB.users.find({}, {
+    const users = await DB.users.find({
+        isDeleted: false
+    }, {
         _id: false,
         id: true,
         name: true,

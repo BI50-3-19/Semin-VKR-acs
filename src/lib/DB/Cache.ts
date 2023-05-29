@@ -54,7 +54,8 @@ class Cache {
 
         if (user === undefined || force) {
             user = await this._db.users.findOne({
-                id
+                id,
+                isDeleted: false
             }).lean();
 
             if (user === null || user === undefined) {

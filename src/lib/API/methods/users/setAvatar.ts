@@ -22,7 +22,8 @@ server.post("/users.setAvatar", {
 
     if ("userId" in request.query) {
         user = await DB.users.findOne({
-            id: request.query.userId
+            id: request.query.userId,
+            isDeleted: false
         }).lean();
 
         if (user === null) {
