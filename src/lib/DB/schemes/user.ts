@@ -64,7 +64,7 @@ const userSchema = new Schema<TUserBox>({
         required: false
     },
     lastPassId: {
-        type: [Schema.Types.Number],
+        type: Schema.Types.Number,
         required: false
     },
     auth: {
