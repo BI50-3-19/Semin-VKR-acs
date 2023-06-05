@@ -28,13 +28,18 @@ server.post("/users.delete", {
         });
     }
 
-    await DB.users.updateOne({
-        id: request.body.userId
-    }, {
-        $set: {
-            isDeleted: true
-        }
-    });
+    await Promise.all([
+        DB.users.updateOne({
+            id: request.body.userId
+        }, {
+            $set: {
+                isDeleted: true
+            }
+        }),
+        DB.sessions.deleteMany({
+            userId: request.body.userId
+        })
+    ]);
 
     return true;
 });
