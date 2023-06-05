@@ -147,7 +147,11 @@ server.addHook<{
         }
         request.userData = user;
 
-        if (request.user.createdAt + (DB.config.server.accessTokenTTL * 1000) < Date.now()) {
+        if (
+            request.user.createdAt + (DB.config.server.accessTokenTTL * 1000) < Date.now() &&
+            section !== "sessions" &&
+            method !== "getNewTokens"
+        ) {
             throw new APIError({
                 code: 30, request
             });
