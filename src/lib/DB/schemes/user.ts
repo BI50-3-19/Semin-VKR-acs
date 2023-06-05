@@ -39,7 +39,7 @@ const userBox = Type.Object({
     roleId: Type.Number(),
     groups: Type.Array(Type.Number()),
     lastPassId: Type.Optional(Type.Number()),
-    auth: Type.Optional(userAuthBox),
+    auth: userAuthBox,
     name: Type.String(),
     surname: Type.String(),
     patronymic: Type.Optional(Type.String()),
