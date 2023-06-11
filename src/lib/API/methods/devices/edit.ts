@@ -1,3 +1,4 @@
+import utils from "@rus-anonym/utils";
 import server from "../..";
 import DB from "../../../DB";
 import APIError from "../../Error";
@@ -12,7 +13,8 @@ server.post("/devices.edit", {
             description: Type.Optional(Type.String()),
             prevAreaId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
             nextAreaId: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-            isEnabled: Type.Optional(Type.Boolean())
+            isEnabled: Type.Optional(Type.Boolean()),
+            ip: Type.Optional(Type.String())
         })
     }
 }, async (request) => {
@@ -28,8 +30,15 @@ server.post("/devices.edit", {
         description,
         prevAreaId,
         nextAreaId,
-        isEnabled
+        isEnabled,
+        ip
     } = request.body;
+
+    if (ip !== undefined && !utils.IP.is(ip)) {
+        throw new APIError({
+            code: 2, request
+        });
+    }
 
     if (!(await DB.devices.exists({ id }))) {
         throw new APIError({
@@ -68,7 +77,8 @@ server.post("/devices.edit", {
             description,
             prevAreaId,
             nextAreaId,
-            isEnabled
+            isEnabled,
+            ip
         }
     });
 

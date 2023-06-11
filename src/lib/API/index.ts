@@ -202,6 +202,14 @@ server.addHook<{
             });
         }
 
+        const deviceIp = request.headers["x-forwarded-for"] || request.connection.remoteAddress;
+        if (device.ip && device.ip !== deviceIp) {
+            throw new APIError({
+                code: 4,
+                request
+            });
+        }
+
         void DB.devices.updateOne({
             id: device.id
         }, { $set: { lastRequestDate: Date.now() } });

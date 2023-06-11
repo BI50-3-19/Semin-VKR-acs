@@ -10,7 +10,8 @@ const deviceBox = Type.Object({
     prevAreaId: Type.Union([Type.Number(), Type.Null()]),
     nextAreaId: Type.Union([Type.Number(), Type.Null()]),
     isEnabled: Type.Boolean(),
-    lastRequestDate: Type.Optional(Type.Date())
+    lastRequestDate: Type.Optional(Type.Date()),
+    ip: Type.Optional(Type.String())
 });
 
 type TDeviceBox = Static<typeof deviceBox>
@@ -52,13 +53,17 @@ const deviceSchema = new Schema<TDeviceBox>({
     lastRequestDate: {
         type: Schema.Types.Date,
         required: false
+    },
+    ip: {
+        type: Schema.Types.String,
+        required: false
     }
 }, {
     versionKey: false
 });
 
-export type { TDeviceBox };
 export { deviceBox };
+export type { TDeviceBox };
 
 
 export default deviceSchema;
