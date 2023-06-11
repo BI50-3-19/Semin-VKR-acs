@@ -44,7 +44,7 @@ server.post("/devices.edit", {
     }
 
     if (prevAreaId !== null || nextAreaId !== null) {
-        const total = +(prevAreaId !== null) + +(nextAreaId !== null);
+        const total = +(prevAreaId !== null && prevAreaId !== undefined) + +(nextAreaId !== null && nextAreaId !== undefined);
 
         if (total !== (await DB.areas.count({
             id: {
