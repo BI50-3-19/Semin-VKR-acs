@@ -37,7 +37,7 @@ server.post("/devices.edit", {
         });
     }
 
-    if (prevAreaId !== null && (prevAreaId === nextAreaId)) {
+    if (prevAreaId !== null && prevAreaId !== undefined && (prevAreaId === nextAreaId)) {
         throw new APIError({
             code: 26, request
         });
