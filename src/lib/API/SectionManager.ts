@@ -145,7 +145,9 @@ sectionManager.add(new Section({
         "createReason",
         "deleteReason",
         "editReason",
-        "getReasons"
+        "getReasons",
+        "generateAccessKey",
+        "getUserAccessKeys"
     ]
 }));
 
