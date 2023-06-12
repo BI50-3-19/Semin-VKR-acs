@@ -123,12 +123,10 @@ const securityIncidentSchema = new Schema<TFullSecurityIncidentBox>({
     versionKey: false
 });
 
+export { SecurityIncidents, securityIncidentBox };
 export type {
-    TSecurityIncidentBox,
-    TFullSecurityIncidentBox,
-    TSecurityIncidentCreatorBox
+    TFullSecurityIncidentBox, TSecurityIncidentBox, TSecurityIncidentCreatorBox
 };
-export { securityIncidentBox, SecurityIncidents };
 
 
 export default securityIncidentSchema;

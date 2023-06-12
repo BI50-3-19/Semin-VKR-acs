@@ -20,18 +20,36 @@ const passLogCreatorUser = Type.Object({
     userId: Type.Number()
 });
 
-const passLogSuccessfulBox = Type.Object({
-    type: Type.Literal("successful"),
-    prevAreaId: Type.Union([Type.Number(), Type.Null()]),
-    areaId: Type.Union([Type.Number(), Type.Null()]),
-    creator: Type.Union([passLogCreatorAcs, passLogCreatorUser])
-});
+const passLogSuccessfulBox = Type.Intersect([
+    Type.Object({
+        type: Type.Literal("successful"),
+        prevAreaId: Type.Union([Type.Number(), Type.Null()]),
+        areaId: Type.Union([Type.Number(), Type.Null()]),
+    }),
+    Type.Union([
+        Type.Object({
+            creator: passLogCreatorAcs,
+            keyId: Type.Number()
+        }),
+        Type.Object({
+            creator: passLogCreatorUser,
+        })
+    ])
+]);
 
 const passLogUnsuccessfulBox = Type.Intersect([
     Type.Object({
         type: Type.Literal("unsuccessful"),
-        creator: Type.Union([passLogCreatorAcs, passLogCreatorUser])
     }),
+    Type.Union([
+        Type.Object({
+            creator: passLogCreatorAcs,
+            keyId: Type.Number()
+        }),
+        Type.Object({
+            creator: passLogCreatorUser,
+        })
+    ]),
     Type.Union([
         Type.Object({
             reason: Type.Literal(PassLogUnsuccesfulReasons.SecurityDenyAccess),
@@ -127,6 +145,10 @@ const passLogSchema = new Schema<TPassFullLogBox>({
         type: Schema.Types.Number,
         required: false
     },
+    keyId: {
+        type: Schema.Types.Number,
+        required: false
+    },
     areaId: {
         type: Schema.Types.Number,
         required: false
@@ -135,8 +157,8 @@ const passLogSchema = new Schema<TPassFullLogBox>({
     versionKey: false
 });
 
-export type { TPassFullLogBox, TPassLogBox };
 export { PassLogUnsuccesfulReasons, passFullLogBox };
+export type { TPassFullLogBox, TPassLogBox };
 
 
 export default passLogSchema;

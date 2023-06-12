@@ -16,6 +16,7 @@ import userSchema, { TUserBox } from "./schemes/user";
 
 import Cache from "./Cache";
 import Storage from "./Storage";
+import keySchema, { TKeyBox } from "./schemes/key";
 
 class DB {
     public readonly config = config;
@@ -32,6 +33,7 @@ class DB {
     public readonly securityIncidents: mongoose.Model<TFullSecurityIncidentBox>;
     public readonly securityReasons: mongoose.Model<TSecurityReasonBox>;
     public readonly sessions: mongoose.Model<TSessionBox>;
+    public readonly keys: mongoose.Model<TKeyBox>;
 
     public readonly files: Storage;
 
@@ -62,6 +64,7 @@ class DB {
         this.securityIncidents = createModel("security-incidents", securityIncidentSchema);
         this.securityReasons = createModel("security-reasons", securityReasonSchema);
         this.sessions = createModel("sessions", sessionSchema);
+        this.keys = createModel("keys", keySchema);
 
         this.cache = new Cache(this);
         this.files = new Storage(this);

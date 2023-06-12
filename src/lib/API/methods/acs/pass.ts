@@ -12,7 +12,7 @@ const DIRECTIONS = ["next", "prev"] as const;
 server.post("/acs.pass", {
     schema: {
         body: Type.Object({
-            userId: Type.Number(),
+            key: Type.String(),
             direction: Type.Union(DIRECTIONS.map(x => Type.Literal(x)))
         }),
         response: {
@@ -21,15 +21,26 @@ server.post("/acs.pass", {
     }
 }, async (request) => {
     const device = request.deviceData;
-    const { userId, direction } = request.body;
+    const { key, direction } = request.body;
     const date = new Date();
 
-    const user = await DB.cache.getUser(userId);
+    const keyInfo = await DB.keys.findOne({ key }).lean();
+
+    if (keyInfo === null || keyInfo.isBlocked || keyInfo.isDeleted) {
+        return false;
+    }
+
+    if (keyInfo.expiresIn && keyInfo.expiresIn < new Date()) {
+        void DB.keys.updateOne({ key }, { $set: { isDeleted: true } });
+        return false;
+    }
+
+    const user = await DB.cache.getUser(keyInfo.userId);
 
     if (user === null) {
         void ACS.addSecurityIncident({
             type: SecurityIncidents.UserNotFound,
-            userId,
+            userId: keyInfo.userId,
             creator: {
                 type: "acs",
                 deviceId: device.id
@@ -43,6 +54,7 @@ server.post("/acs.pass", {
             user,
             log: {
                 type: "unsuccessful",
+                keyId: keyInfo.id,
                 reason: PassLogUnsuccesfulReasons.DisabledDevice,
                 creator: {
                     type: "acs",
@@ -76,7 +88,7 @@ server.post("/acs.pass", {
         void ACS.addSecurityIncident({
             type: SecurityIncidents.AreaNotFound,
             areaId,
-            userId,
+            userId: user.id,
             creator: {
                 type: "acs",
                 deviceId: device.id
@@ -92,6 +104,7 @@ server.post("/acs.pass", {
             user,
             log: {
                 type: "unsuccessful",
+                keyId: keyInfo.id,
                 reason: PassLogUnsuccesfulReasons.AreaIsLocked,
                 areaId: area.id,
                 creator: {
@@ -110,10 +123,11 @@ server.post("/acs.pass", {
     });
 
     if (isAllow) {
-        await ACS.addPassLog({
+        const pass = await ACS.addPassLog({
             user,
             log: {
                 type: "successful",
+                keyId: keyInfo.id,
                 creator: {
                     type: "acs",
                     deviceId: device.id
@@ -122,12 +136,21 @@ server.post("/acs.pass", {
                 areaId: nextAreaId,
             }
         });
+        void DB.keys.updateOne({ key }, {
+            $inc: {
+                passes: 1
+            },
+            $set: {
+                lastPassId: pass.id
+            }
+        });
         return true;
     } else {
         await ACS.addPassLog({
             user,
             log: {
                 type: "unsuccessful",
+                keyId: keyInfo.id,
                 reason: PassLogUnsuccesfulReasons.OutsideUserSchedule,
                 areaId: area.id,
                 creator: {
